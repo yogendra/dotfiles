@@ -1,6 +1,6 @@
 ### Defaults
 
-User dwallraff
+User yrampuria
 IdentityFile ~/.ssh/generic.key
 ServerAliveInterval 120
 PreferredAuthentications publickey
@@ -10,21 +10,4 @@ Include configs/*
 
 
 ### My stuffs
-Host dreamhost
-	HostName randolph.dreamhost.com
 
-Host jumpbox
-	HostName 35.198.223.120
-	IdentityFile ~/.ssh/gcp.key
-
-Host github.com
-	IdentityFile ~/.ssh/github.key
-	StrictHostKeyChecking no
-	UserKnownHostsFile /dev/null
-	LogLevel QUIET
-
-Host sr.ht
-	IdentityFile ~/.ssh/sr.ht.key
-	StrictHostKeyChecking no
-	UserKnownHostsFile /dev/null
-	LogLevel QUIET
