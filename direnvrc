@@ -1,0 +1,186 @@
+#-*- mode: sh; -*-
+# This is a extra goodness for direnv
+# adds
+#   use toolsmith [toolsmith env name]
+#   use pcf [domain]
+#   use pcf-pas
+#   use pcf-pks
+# To use just append content to your $HOME/.direnvrc. You may use following command to do same
+
+use_docker-machine(){
+  local env=${1:-default}
+  echo Docker machine: $env
+  local machine_cmd=$(docker-machine env --shell bash $env)
+
+  eval $(docker-machine env --shell bash $env)
+}
+export_function() {
+  local name=$1
+  local alias_dir=$PWD/.direnv/aliases
+  mkdir -p "$alias_dir"
+  PATH_add "$alias_dir"
+  local target="$alias_dir/$name"
+  if declare -f "$name" >/dev/null; then
+    echo "#!/usr/bin/env bash" > "$target"
+    declare -f "$name" >> "$target" 2>/dev/null
+    echo "$name \$*" >> "$target"
+    chmod +x "$target"
+  fi
+}
+
+use_pcf() {
+    # Required Variables:
+    # OM_TARGET - OpsMan Address
+    # OM_USERNAME - OpsMan username
+    # OM_PASSWORD - OpsMan password 
+    # OM_SKIP_SSL_VALIDATION - Skip OpsMan SSL checks
+    # OM_KEY - path to OpsMsn key
+    
+    if [ -z "$OM_TARGET" -o -z "$OM_USERNAME" -o -z "$OM_PASSWORD" -o -z "$OM_KEY" ]
+    then
+        echo "OM_TARGET, OM_USERNAME, OM_PASSWORD and OM_KEY are required to be set"
+        exit 1
+    fi
+    
+    if [[ ! -e $OM_KEY ]]
+    then
+      echo "$OM_KEY: missing"
+      ecit 1
+    fi
+    
+    export OM_CA_CERTS=$PWD/opsman-ca-certs.pem
+    if [[ ! -f $OM_CA_CERTS ]]
+    then
+        echo Extracting Ops Manager ca certifiactes
+        om -k certificate-authorities --format json | jq -r '.[].cert_pem' > $OM_CA_CERTS
+    fi
+    export PCF_DOMAIN=$TS_G_ENV.$ROOT_DOMAIN
+
+
+    export PCF_DOMAIN=${1:-$PCF_DOMAIN}
+    
+    [[ -z $PCF_DOMAIN ]] && echo "You need to provide pcf domain root or set PCF_DOMAIN variable" && exit 1
+    
+    export PCF_BBR_KEYFILE=$PWD/bbr.key
+    export PCF_BOSH_CA_CERT=$PWD/bosh-ca.cer
+    export PCF_BOSH_ENV=$PWD/.env-bosh
+
+    export BOSH_ALL_PROXY="ssh+socks5://ubuntu@$OM_TARGET:22?private-key=$OM_KEY"
+    export BOSH_CA_CERT=$PCF_BOSH_CA_CERT
+
+    if [[ ! -f $PCF_BOSH_CA_CERT ]]
+    then
+        echo Extracting Bosh CA Cert
+        om --target https://$OM_TARGET --skip-ssl-validation --username $OM_USERNAME --password $OM_PASSWORD certificate-authorities -f json | jq -r '.[] | select(.active==true) | .cert_pem' > $PCF_BOSH_CA_CERT && chmod 600 ${PCF_BOSH_CA_CERT}
+    fi
+   
+    if [[ ! -f $PCF_BBR_KEYFILE ]]
+    then
+        echo Extracting BBR Key
+        echo "$(om -k credentials --product-name p-bosh --credential-reference .director.bbr_ssh_credentials -f private_key_pem)" > ${PCF_BBR_KEYFILE} && chmod 600 ${PCF_BBR_KEYFILE}
+    fi
+
+    if [[ ! -f $PCF_BOSH_ENV ]] 
+    then
+        CREDS=$(om -k curl --path /api/v0/deployed/director/credentials/bosh_commandline_credentials -s | jq .credential -r | sed -E 's/bosh//')
+        [ -n "${ZSH_VERSION}" ] && setopt shwordsplit
+        array=($CREDS)
+        for VAR in ${array[@]}; do
+            [[ ! $VAR =~ ^BOSH_CA_CERT= ]] &&  echo export $VAR >> $PCF_BOSH_ENV
+            
+        done
+        [ -n "${ZSH_VERSION}" ] && unsetopt shwordsplit
+    fi
+    watch_file $PCF_BOSH_ENV
+    source $PCF_BOSH_ENV
+    
+    
+    function pcf-pcf-info {
+        echo OpsMan: https://${OM_TARGET}
+    }
+    export_function pcf-pcf-info
+
+    function pcf-info {
+        pcf-pcf-info
+    }
+    export_function pcf-info
+
+    function pcf-opsman {
+        echo $OM_PASSWORD | pbcopy
+        open https://$OM_TARGET
+    }
+    export_function pcf-opsman
+
+    function pcf-opsman-ssh {
+        ssh -i $OM_KEY -o StrictHostKeyChecking=no ubuntu@$OM_TARGET $*
+    }
+    export_function pcf-opsman-ssh    
+}
+
+use_pcf-pas() {
+    export PCF_DOMAIN=${1:-$PCF_DOMAIN}
+    
+    [[ -z $PCF_DOMAIN ]] && echo "You need to provide pcf domain root or set PCF_DOMAIN variable" && exit 1
+
+    export PCF_SYS_DOMAIN=sys.${PCF_DOMAIN}
+    export PCF_APP_DONAIN=apps.${PCF_DOMAIN}
+    export PCF_OPSMAN=pcf.${PCF_DOMAIN}
+    export PCF_PAS_APPSMAN=apps.${PCF_SYS_DOMAIN}
+    export PCF_PAS_API=api.${PCF_SYS_DOMAIN}
+
+    function pcf-info {
+        pcf-pcf-info
+        echo AppsMan: https://${PCF_PAS_APPSMAN}
+        echo PAS API: ${PCF_PAS_API}
+    }
+    export_function pcf-info
+    
+    function pcf-pas-login {
+        cf login --skip-ssl-validation -a https://${PCF_PAS_API} -u admin
+    }
+    export_function pcf-pas-login
+
+    function pcf-pas-appsman {
+        open https://$PCF_PAS_APPSMAN
+    }
+    export_function pcf-pas-appsman
+
+}
+use_pcf-pks () {
+
+    export PCF_DOMAIN=${1:-$PCF_DOMAIN}
+    
+    [[ -z $PCF_DOMAIN ]] && echo "You need to provide pcf domain root or set PCF_DOMAIN variable" && exit 1
+
+    export PCF_PKS_API=api.pks.${PCF_DOMAIN}
+
+    function pcf-pks-login {
+        pks login -k -a ${PCF_PKS_API} -u admin -p "$(om credentials -p pivotal-container-service --credential-reference .properties.uaa_admin_password -f secret)"
+    }
+    export_function pcf-pks-login
+
+    function pcf-info { 
+        pcf-pcf-info
+        echo PKS API: ${PCF_PKS_API}
+    }
+    export_function pcf-info
+
+    function pcf-pks-create-cluster {
+        CLUSTER_ID=${1:-cluster-1}
+        CLUSTER_PLAN=${2:-small}
+        CLUSTER_NAME=${TS_G_ENV}-pks-${CLUSTER_ID}
+        CLUSTER_HOSTNAME=${CLUSTER_ID}.${PCF_DOMAIN}
+        pks create-cluster  $CLUSTER_NAME --external-hostname ${CLUSTER_HOSTNAME} --plan $CLUSTER_PLAN && \
+        if ! nslookup  $CLUSTER_HOSTNAME >> /dev/null
+        then
+            cat <<EOF
+$CLUSTER_HOSTNAME: not found. 
+- You should configure it on the DNS  
+- On GCP use GCP Console > Networking > Cloud DNS (https://console.cloud.google.com/net-services/dns/zones) to set correct IP
+- On AWS [WIP]
+- On Azure [WIP]
+EOF
+        fi
+    }
+    export_function pcf-pks-create-cluster
+}
