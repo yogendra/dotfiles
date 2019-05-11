@@ -97,3 +97,4 @@ function prompt {
 }
 
 prompt
+eval "$(direnv hook bash)"
