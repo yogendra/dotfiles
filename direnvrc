@@ -148,10 +148,29 @@ use_pcf-pks () {
 
     export PCF_DOMAIN=${1:-$PCF_DOMAIN}
     export KUBECONFIG=$PWD/.kubeconfig
-    
+    export PCF_PKS_API_CA_CERT=$PWD/pks-api-ca.pem
+
+
     [[ -z $PCF_DOMAIN ]] && echo "You need to provide pcf domain root or set PCF_DOMAIN variable" && exit 1
 
     export PCF_PKS_API=api.pks.${PCF_DOMAIN}
+
+        if [[ ! -f $PCF_PKS_API_CA_CERT ]]
+    then
+        echo Extracting PKS API CA Certificate
+        echo "$(om -k credentials --product-name pivotal-container-service --credential-reference .pivotal-container-service.pks_tls -f cert_pem)" > ${PCF_PKS_API_CA_CERT} && chmod 600 ${PCF_PKS_API_CA_CERT}
+    fi
+
+    function pcf-pks-uaac-target {
+      uaac target https://${PCF_PKS_API}:8443 --ca-cert $PCF_PKS_API_CA_CERT --skip-ssl-validation
+    }
+    export_function pcf-pks-uaac-target
+
+    function pcf-pks-uaac-login {
+      pcf-pks-uaac-target
+      uaac token client get admin -s $(om -k credentials --product-name pivotal-container-service --credential-reference .properties.pks_uaa_management_admin_client -f secret)
+    }
+    export_function pcf-pks-uaac-login
 
     function pcf-pks-login {
         pks login -k -a ${PCF_PKS_API} -u admin -p "$(om credentials -p pivotal-container-service --credential-reference .properties.uaa_admin_password -f secret)"
