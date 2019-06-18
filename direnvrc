@@ -13,6 +13,7 @@ use_docker-machine(){
   local machine_cmd=$(docker-machine env --shell bash $env)
 
   eval $(docker-machine env --shell bash $env)
+  export DOCKER_MACHINE_IP=$(docker-machine ip $env)
 }
 export_function() {
   local name=$1
@@ -35,28 +36,21 @@ use_pcf() {
     # OM_PASSWORD - OpsMan password 
     # OM_SKIP_SSL_VALIDATION - Skip OpsMan SSL checks
     # OM_KEY - path to OpsMsn key
-    
-    if [ -z "$OM_TARGET" -o -z "$OM_USERNAME" -o -z "$OM_PASSWORD" -o -z "$OM_KEY" ]
-    then
-        echo "OM_TARGET, OM_USERNAME, OM_PASSWORD and OM_KEY are required to be set"
-        exit 1
-    fi
-    
-    if [[ ! -e $OM_KEY ]]
-    then
-      echo "$OM_KEY: missing"
-      ecit 1
-    fi
-    
+    export UAAC_HOME=$PWD
+    export PCF_OPSMAN_KEYFILE=$OM_KEY
     export OM_CA_CERTS=$PWD/opsman-ca-certs.pem
     if [[ ! -f $OM_CA_CERTS ]]
     then
         echo Extracting Ops Manager ca certifiactes
         om -k certificate-authorities --format json | jq -r '.[].cert_pem' > $OM_CA_CERTS
     fi
-    export PCF_DOMAIN=$TS_G_ENV.$ROOT_DOMAIN
 
-
+    if [ -z "$OM_TARGET" -o -z "$OM_USERNAME" -o -z "$OM_PASSWORD" -o -z "$OM_KEY" ]
+    then
+        echo "OM_TARGET, OM_USERNAME, OM_PASSWORD and OM_KEY are required to be set"
+        exit 1
+    fi
+    
     export PCF_DOMAIN=${1:-$PCF_DOMAIN}
     
     [[ -z $PCF_DOMAIN ]] && echo "You need to provide pcf domain root or set PCF_DOMAIN variable" && exit 1
@@ -112,12 +106,13 @@ use_pcf() {
     export_function pcf-opsman
 
     function pcf-opsman-ssh {
-        ssh -i $OM_KEY -o StrictHostKeyChecking=no ubuntu@$OM_TARGET $*
+        ssh -i $PCF_OPSMAN_KEYFILE -o StrictHostKeyChecking=no ubuntu@$OM_TARGET $*
     }
     export_function pcf-opsman-ssh    
 }
 
 use_pcf-pas() {
+    export CF_HOME=$PWD
     export PCF_DOMAIN=${1:-$PCF_DOMAIN}
     
     [[ -z $PCF_DOMAIN ]] && echo "You need to provide pcf domain root or set PCF_DOMAIN variable" && exit 1
@@ -128,15 +123,18 @@ use_pcf-pas() {
     export PCF_PAS_APPSMAN=apps.${PCF_SYS_DOMAIN}
     export PCF_PAS_API=api.${PCF_SYS_DOMAIN}
 
+    [[ ! -d $CF_HOME ]] && mkdir $CF_HOME
+
     function pcf-info {
         pcf-pcf-info
         echo AppsMan: https://${PCF_PAS_APPSMAN}
         echo PAS API: ${PCF_PAS_API}
+        echo CF_HOME=$CF_HOME
     }
     export_function pcf-info
     
     function pcf-pas-login {
-        cf login --skip-ssl-validation -a https://${PCF_PAS_API} -u admin
+        cf login --skip-ssl-validation -a https://${PCF_PAS_API} -u admin -p $(om credentials -p cf -c .uaa.admin_credentials -f password)
     }
     export_function pcf-pas-login
 
@@ -149,6 +147,7 @@ use_pcf-pas() {
 use_pcf-pks () {
 
     export PCF_DOMAIN=${1:-$PCF_DOMAIN}
+    export KUBECONFIG=$PWD/.kubeconfig
     
     [[ -z $PCF_DOMAIN ]] && echo "You need to provide pcf domain root or set PCF_DOMAIN variable" && exit 1
 
@@ -176,7 +175,7 @@ use_pcf-pks () {
             cat <<EOF
 $CLUSTER_HOSTNAME: not found. 
 - You should configure it on the DNS  
-- On GCP use GCP Console > Networking > Cloud DNS (https://console.cloud.google.com/net-services/dns/zones) to set correct IP
+- On GCP use GCP Consol > Networking > Cloud DNS (https://console.cloud.google.com/net-services/dns/zones) to set correct IP
 - On AWS [WIP]
 - On Azure [WIP]
 EOF
