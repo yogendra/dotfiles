@@ -85,7 +85,7 @@ alias auso=sudo
 alias sudp=sudo
 
 # Set vi as line editor
-set -o vi
+set -o emacs
 
 # Prompts rule everything around me, PREAM, set the vars, $$ y'all
 function prompt {
