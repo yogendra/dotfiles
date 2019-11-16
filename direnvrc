@@ -22,6 +22,7 @@ use_docker-machine(){
   eval $(docker-machine env --shell bash $env)
   export DOCKER_MACHINE_IP=$(docker-machine ip $env)
 }
+
 export_function() {
   local name=$1
   local alias_dir=$PWD/.direnv/aliases
@@ -34,6 +35,84 @@ export_function() {
     echo "$name \$*" >> "$target"
     chmod +x "$target"
   fi
+}
+
+use_pcf_terraform() {
+  DOMAIN=$1; shift
+  export PCF_DOMAIN=$DOMAIN
+  export OM_TARGET=pcf.$DOMAIN
+  export OM_USERNAME=admin
+  export OM_SKIP_SSL_VALIDATION=true
+  export OM_PASSWORD=$1; shift
+  export OM_DECRYPTION_PASSPHRASE=$OM_PASSWORD
+  export OM_KEY=${1:-om.key}
+  use pcf
+}
+
+use_pcf_toolsmith() {
+    export TS_G_ENV=$1
+    [[ -z $TS_G_ENV ]] && export TS_G_ENV=$(basename $PWD)
+    export ROOT_DOMAIN=cf-app.com
+    export PCF_ENV_FILE=$PWD/${TS_G_ENV}.json
+    watch_file $PCF_ENV_FILE
+
+    [[ ! -f $PCF_ENV_FILE ]] && export PCF_ENV_FILE=~/Downloads/${TS_G_ENV}.json
+    [[ ! -f $PCF_ENV_FILE ]] && echo environment file not found && exit 1
+
+    export OM_USERNAME=
+    export OM_TARGET=$(jq -r .ops_manager_dns ${PCF_ENV_FILE})
+    export OM_USERNAME=$(jq -r .ops_manager.username ${PCF_ENV_FILE})
+    export OM_PASSWORD=$(jq -r .ops_manager.password ${PCF_ENV_FILE})
+    export OM_KEY=$PWD/opsman.key
+    export OM_SKIP_SSL_VALIDATION=true
+
+
+    if [[ ! -f $OM_KEY ]]
+    then
+        echo Extracting Ops Man key
+        echo "$(jq -r .ops_manager_private_key < ${PCF_ENV_FILE})" > ${OM_KEY} && chmod 600 ${OM_KEY}
+    fi
+
+    export PCF_DOMAIN=$TS_G_ENV.$ROOT_DOMAIN
+    use pcf
+}
+
+use_pcf_pez () {
+    # Required argumets:
+    # 1 - PEZ_HAAS_ID (Example: 207)
+    # 2 - PEZ_PASSWD (Example: kjshak734879fzsbSA)
+    # Example: 
+    # use pez 207 80fsaufoasposduf9
+
+    export PEZ_HAAS_ID=$1
+    export PEZ_PASSWD=$2
+    export PEZ_NAME=haas-${PEZ_HAAS_ID}
+    export PEZ_DOMAIN=${PEZ_NAME}.pez.pivotal.io
+    
+    export PEZ_JUMPBOX_WIN=jumpbox-${PEZ_HAAS_ID}.${PEZ_DOMAIN}
+    export PEZ_JUMPBOX_LINUX=ubuntu-${PEZ_HAAS_ID}.${PEZ_DOMAIN}
+    export PEZ_VCENTER=vcsa-01.${PEZ_DOMAIN}
+    export PEZ_NSXMGR=nsxmgr-01.${PEZ_DOMAIN}
+    
+
+    export OM_TARGET=opsmgr-02.${PEZ_DOMAIN}
+    export OM_USERNAME=admin
+    export OM_PASSWORD="${PEZ_PASSWD}"
+    export OM_SKIP_SSL_VALIDATION=true
+    export OM_KEY=$PWD/$PEZ_NAME.key
+    export PCF_PKS_API=api.run.${PEZ_DOMAIN}
+    
+    export PCF_DOMAIN=$PEZ_DOMAIN
+
+    function pcf-pez-ssh-jumpbox {
+        echo ssh \
+            -i $PWD/$PEZ_NAME.key  \
+            -o PasswordAuthentication=no \
+            ubuntu@$PEZ_JUMPBOX_LINUX 
+
+    }
+    export_function pcf-pez-ssh-jumpbox
+    use pcf
 }
 
 use_pcf() {
@@ -151,16 +230,24 @@ use_pcf-pas() {
     export_function pcf-pas-appsman
 
 }
+
 use_pcf-pks () {
 
     export PCF_DOMAIN=${1:-$PCF_DOMAIN}
     export KUBECONFIG=$PWD/.kubeconfig
     export PCF_PKS_API_CA_CERT=$PWD/pks-api-ca.pem
+    export HELM_HOME=$PWD/.helm
+    export PKS_HOME=$PWD
 
 
     [[ -z $PCF_DOMAIN ]] && echo "You need to provide pcf domain root or set PCF_DOMAIN variable" && exit 1
 
-    export PCF_PKS_API=api.pks.${PCF_DOMAIN}
+    export PCF_PKS_API=${PCF_PKS_API:-api.pks.${PCF_DOMAIN}}
+    if [[ -n $PEZ_HAAS_ID ]]; then
+        export PCF_PKS_API=api.run.${PCF_DOMAIN}
+    fi
+    
+    export PKS_API=$PCF_PKS_API
 
         if [[ ! -f $PCF_PKS_API_CA_CERT ]]
     then
