@@ -1,7 +1,9 @@
 #-*- mode: sh; -*-
 # This is a extra goodness for direnv
 # adds
-#   use toolsmith [toolsmith env name]
+#   use pcf-toolsmith <pcf-domain> <om-password>
+#   use pcf-pez  <haas-id> <password>
+#   use pcf-terraform <domain> <om-password>
 #   use pcf [domain]
 #   use pcf-pas
 #   use pcf-pks
@@ -14,6 +16,21 @@ use_python() {
     fi
 }
 
+layout_virtualenv() {
+    local pyversion=$1
+    local pvenv=$2
+    if [ -n "$(which pyenv virtualenv)" ]; then
+        pyenv virtualenv --force --quiet ${pyversion} ${pvenv}-${pyversion}
+    fi
+    pyenv local --unset
+}
+
+layout_activate() {
+    if [ -n "$(which pyenv)" ]; then
+        source $HOME/.pyenv/versions/$1/bin/activate
+    fi
+}
+
 use_docker-machine(){
   local env=${1:-default}
   echo Docker machine: $env
@@ -21,6 +38,16 @@ use_docker-machine(){
 
   eval $(docker-machine env --shell bash $env)
   export DOCKER_MACHINE_IP=$(docker-machine ip $env)
+}
+
+use_nvm() {
+  local node_version=$1
+
+  nvm_sh=~/.nvm/nvm.sh
+  if [[ -e $nvm_sh ]]; then
+    source $nvm_sh
+    nvm use $node_version
+  fi
 }
 
 export_function() {
@@ -59,13 +86,12 @@ use_pcf-toolsmith() {
     [[ ! -f $PCF_ENV_FILE ]] && export PCF_ENV_FILE=~/Downloads/${TS_G_ENV}.json
     [[ ! -f $PCF_ENV_FILE ]] && echo environment file not found && exit 1
 
-    export OM_USERNAME=
     export OM_TARGET=$(jq -r .ops_manager_dns ${PCF_ENV_FILE})
     export OM_USERNAME=$(jq -r .ops_manager.username ${PCF_ENV_FILE})
     export OM_PASSWORD=$(jq -r .ops_manager.password ${PCF_ENV_FILE})
     export OM_KEY=$PWD/opsman.key
     export OM_SKIP_SSL_VALIDATION=true
-
+    export PCF_DOMAIN=$TS_G_ENV.$ROOT_DOMAIN
 
     if [[ ! -f $OM_KEY ]]
     then
@@ -73,7 +99,6 @@ use_pcf-toolsmith() {
         echo "$(jq -r .ops_manager_private_key < ${PCF_ENV_FILE})" > ${OM_KEY} && chmod 600 ${OM_KEY}
     fi
 
-    export PCF_DOMAIN=$TS_G_ENV.$ROOT_DOMAIN
     use pcf
 }
 
