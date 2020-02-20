@@ -66,13 +66,15 @@ export_function() {
 
 use_pcf-terraform() {
   DOMAIN=$1; shift
+  [[ -z $DOMAIN ]] && echo "Domain name is required" && exit 1
+
   export PCF_DOMAIN=$DOMAIN
-  export OM_TARGET=pcf.$DOMAIN
-  export OM_USERNAME=admin
-  export OM_SKIP_SSL_VALIDATION=true
-  export OM_PASSWORD=$1; shift
-  export OM_DECRYPTION_PASSPHRASE=$OM_PASSWORD
-  export OM_KEY=${1:-om.key}
+  export OM_TARGET=${OM_TARGET:-pcf.$DOMAIN}
+  export OM_USERNAME=${OM_USERNAME:-admin}
+  export OM_SKIP_SSL_VALIDATION=${OM_SKIP_SSL_VALIDATION:-true}
+  export OM_PASSWORD=${1:-$OM_PASSWORD}
+  export OM_DECRYPTION_PASSPHRASE=${OM_DECRYPTION_PASSPHRASE:-$OM_PASSWORD}
+  export OM_KEY=${OM_KEY:-om.key}
   use pcf
 }
 
