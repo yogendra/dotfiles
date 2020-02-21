@@ -1,23 +1,26 @@
 #!/usr/bin/env bash
 # Set 2 Environment variables
-#  PROJ_DIR : Project Directory. All tools will get install under PROJ_DIR/bin. (defaults: /usr/local)
+#  PROJ_DIR : Project Directory. All tools will get install under PROJ_DIR/bin. (defaults: $HOME)
 #  OM_PIVNET_TOKEN: Pivotal Network Token (required) Its **NOT** ending with -r. It looks like DJHASLD7_HSDHA7
 #  GITHUB_OPTIONS: (Optional) Provide github userid and token for accessing API. 
 # Run
-# wget -qO- "https://gist.github.com/yogendra/318c09f0cd2548bdd07f592722c9bbec/raw/jumpbox-init.sh?nocache"  | OM_PIVNET_TOKEN=DJHASLD7_HSDHA7 bash
-# Or to put binaries at your preferred location (example: /home/me/bin), provide PROD_DIR
-# wget -qO- "https://gist.github.com/yogendra/318c09f0cd2548bdd07f592722c9bbec/raw/jumpbox-init.sh?nocache"  | OM_PIVNET_TOKEN=DJHASLD7_HSDHA7 PROJ_DIR=/home/yrampuria bash
+# GIT_REPO=yogendra/dotfiles wget -qO- "https://raw.githubusercontent.com/${GIT_REPO}/master/scripts/jumpbox-init.sh?nocache"  | OM_PIVNET_TOKEN=DJHASLD7_HSDHA7 bash
+# Or to put binaries at your preferred location (example: /usr/local/bin), provide PROD_DIR
+# GIT_REPO=yogendra/dotfiles wget -qO- "https://raw.githubusercontent.com/${GIT_REPO}/master/scripts/jumpbox-init.sh?nocache"  | OM_PIVNET_TOKEN=DJHASLD7_HSDHA7 PROJ_DIR=/usr/local bash
 
 
 PROJ_DIR=${PROJ_DIR:-$HOME}
 export PATH=${PATH}:${PROJ_DIR}/bin
 
 OM_PIVNET_TOKEN=${OM_PIVNET_TOKEN}
-[[ -z ${OM_PIVNET_TOKEN} ]] && echo "OM_PIVNET_TOKEN environment variable not set. See instructions at https://gist.github.com/yogendra/318c09f0cd2548bdd07f592722c9bbec#jumpbox-init-sh" && exit 1
+[[ -z ${OM_PIVNET_TOKEN} ]] && echo "OM_PIVNET_TOKEN environment variable not set. See instructions at https://github.com/yogendra/dotfiles/blob/master/README-PCF-TOOLS.md" && exit 1
 echo PROJ_DIR=${PROJ_DIR}
 GITHUB_OPTIONS=${GITHUB_OPTIONS}
 [[ -d ${PROJ_DIR}/bin ]]  || mkdir -p ${PROJ_DIR}/bin
-GIST=${1:-https://gist.github.com/yogendra/318c09f0cd2548bdd07f592722c9bbec}
+GIT_REPO=${1:-https://raw.githubusercontent.com/yogendra/dotfiles/master/}
+DOTFILES_DIR=${DOTFILES_DIR:-$HOME/code/dotfiles}
+
+
 sudo ln -fs /usr/share/zoneinfo/Asia/Singapore /etc/localtime
 
 echo Install basic tools for the jumpbox
@@ -62,7 +65,16 @@ OS_TOOLS=(\
     )
 sudo apt update && sudo apt install -qqy "${OS_TOOLS[@]}"
 
-VERSION_JSON=$(wget ${GITHUB_OPTIONS} -qO- ${GIST}/raw/versions.json )
+if [[ ! -d $DOTFILES_DIR ]]
+then
+  mkdir $DOTFILES_DIR
+  git clone https://github.com/${GIT_REPO}.git $DOTFILES_DIR
+  export $DOTFILES_DIR/scripts
+else
+  (cd $DOTFILES_DIR; git reset --hard; git pull --rebase)
+fi
+
+VERSION_JSON=$(cat ${DOTFILES_DIR}/config/versions.json)
 function asset_version {
   ASSET_NAME=$1
   echo ${VERSION_JSON} | jq -r ".[\"$ASSET_NAME\"]"
@@ -231,7 +243,7 @@ wget -q ${URL} -O- | tar -C ${PROJ_DIR}/bin -xz ./riff
 chmod a+x ${PROJ_DIR}/bin/riff
 
 # Get updated url at https://github.com/sharkdp/bat/releases/latest
-VERSION=$(wget ${GITHUB_OPTIONS} -qO- https://api.github.com/repos/sharkdp/bat/releases/latest  | jq -r '.tag_name'  )
+VERSION=$(asset_version bat)
 URL="$(github_asset  sharkdp/bat x86_64-unknown-linux-gnu tags/${VERSION})"
 echo Downloading: bat from ${URL}
 wget -q  ${URL} -O- | tar -C /tmp -xz bat-${VERSION}-x86_64-unknown-linux-gnu/bat
@@ -245,9 +257,6 @@ URL="$(github_asset direnv/direnv linux-amd64)"
 echo Downloading: direnv from ${URL}
 wget -q  ${URL} -O ${PROJ_DIR}/bin/direnv
 chmod a+x ${PROJ_DIR}/bin/direnv
-
-wget -q "${GIST}/raw/.direnvrc" -O ${HOME}/.direnvrc
-
 
 # Get updated url at https://network.pivotal.io/products/p-scheduler
 VERSION=$(asset_version p-scheduler)
@@ -299,34 +308,36 @@ echo Install  Azure client
 wget -qO- https://aka.ms/InstallAzureCLIDeb | sudo bash
 
 
-mkdir -p .vim/autoload
-wget -q "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim" -O ${HOME}/.vim/autoload/plug.vim
-wget -q "${GIST}/raw/.vimrc" -O ${HOME}/.vimrc
+echo Setting 
+echo Setting Direnv
+ls -sf $DOTFILES_DIR/.direnvrc ${HOME}/.direnvrc
+
+echo Setting Vim
+ln -sf "${DOTFILES_DIR}/.vimrc" ${HOME}/.vimrc
 
 echo Setting TMUX
-wget -q "${GIST}/raw/.tmux.conf" -O ${HOME}/.tmux.conf
+ln -sf "${DOTFILES_DIR}/.tmux.conf" ${HOME}/.tmux.conf
 
-echo Put SSH keys
-wget -q ${GIST}/raw/keys | while read key; do
+echo Setting SSH keys
+mkdir ~/.ssh
+cat ${DOTFILES_DIR}/raw/keys | while read key; do
   wget -qO - "${key}" >> ${HOME}/.ssh/authorized_keys
 done
+sort $HOME/.ssh/authorized_keys | uniq > $HOME/.ssh/authorized_keys.uniq
+ln -sf $DOTFILES_DIR/.ssh/config $HOME/.ssh/config
+ln -sf $DOTFILES_DIR/.ssh/configs $HOME/.ssh/configs
 
+echo Setting Bash shell
+ln -sf $DOTFILES_DIR/.bashrc $HOME/.bashrc
 
-if [[ -z $(cat ~/.bashrc | grep "# ==== ADDED BY jumpbox-init.sh ====") ]]
-then
-  echo Setting up and persisting shell settings
-  cp ~/.bashrc ~/.bashrc.pre-init-$(date +%Y%m%d-%H%M%S)
-  cat <<EOF >> ~/.bashrc
-# ==== ADDED BY jumpbox-init.sh ====
-export PATH=${PROJ_DIR}/bin:\${PATH}
-eval "\$(direnv hook bash)"
-EOF
-fi
-source ~/.bashrc
+echo Setting Git config
+ln -sf $DOTFILES_DIR/.gitconfig $HOME/.gitconfig 
 
 echo Created workspace directory
 mkdir -p $PROJ_DIR/workspace/deployments
 mkdir -p $PROJ_DIR/workspace/tiles
+
+
 echo <<EOF
 Create your SSH keys
 ===============================================================================
