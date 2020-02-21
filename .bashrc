@@ -6,6 +6,7 @@
 ## Set some vars
 export EDITOR="vim"
 export GOPATH=$HOME/code/go
+export DOTFILES_DIR=$HOME/code/dotfiles
 export PATH=/usr/local/bin:/usr/bin:/bin:/sbin:/usr/sbin:/usr/local/sbin:~/.local/bin:/usr/local/go/bin:$GOPATH/bin
 TODAY=$(date "+%Y%m%d") && export TODAY
 
@@ -98,3 +99,4 @@ function prompt {
 
 prompt
 eval "$(direnv hook bash)"
+export PATH=$PATH:$DOTFILES_DIR/scripts:$HOME/bin
