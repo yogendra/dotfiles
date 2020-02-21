@@ -1,0 +1,15 @@
+{
+  "build-service": "0.0.4",
+  "buildpack": "0.8.1",
+  "cf": "6.49.0",
+  "container-services-manager": "0.6.42",
+  "docker": "19.03.6",
+  "duffle": "0.3.5-beta.1",
+  "p-event-alerts": "1.2.10",
+  "p-scheduler": "1.2.30",
+  "pcf-app-autoscaler": "2.0.233",
+  "pivotal-container-service": "1.6.1",
+  "pivotal-function-service": "alpha v0.4.0",
+  "riff": "0.5.0",
+  "terraform": "0.11.14"
+}
