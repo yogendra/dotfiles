@@ -64,7 +64,7 @@ OS_TOOLS=(\
     )
 sudo apt update && sudo apt install -qqy "${OS_TOOLS[@]}"
 
-wget -qO- "https://raw.githubusercontent.com/${GIT_REPO}/master/scripts/dotfiles-init.sh?nocache"| bash
+wget -qO- "https://raw.githubusercontent.com/${GIT_REPO}/master/scripts/dotfiles-init.sh?$RANDOM"| bash
 
 VERSION_JSON=$(cat ${DOTFILES_DIR}/config/versions.json)
 function asset_version {
