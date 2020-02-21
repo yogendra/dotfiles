@@ -1,10 +1,12 @@
 FROM ubuntu:latest
 ARG build_secret_location=http://secrets-server/secrets.sh
-ADD sources.list /etc/apt/sources.list
+ARG git_repo=yogendra/dotfiles
+
+ADD config/sources.list /etc/apt/sources.list
 
 RUN set -e && \
     apt update && \
-    apt -qqy install sudo wget && \
+    apt -qqy install wget sudo && \
     adduser --disabled-password --gecos '' pcf && \
     adduser pcf sudo && \
     echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
@@ -15,7 +17,7 @@ WORKDIR /home/pcf
 
 RUN set -e &&\
     eval $(wget -qO- $build_secret_location) && \
-    wget -qO- "${GIST_URL}/raw/jumpbox-init.sh?$RANDOM" | bash && \
+    wget -qO- "https://raw.githubusercontent.com/$git_repo/master/scripts/pcf-jumpbox-init.sh?$RANDOM" |  bash && \
     sudo rm -rf /var/lib/apt/lists/* 
 
 VOLUME /home/pcf/workspace
