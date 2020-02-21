@@ -6,7 +6,7 @@
 # Run
 # GIT_REPO=yogendra/dotfiles wget -qO- "https://raw.githubusercontent.com/${GIT_REPO}/master/scripts/jumpbox-init.sh?nocache"  | OM_PIVNET_TOKEN=DJHASLD7_HSDHA7 bash
 # Or to put binaries at your preferred location (example: /usr/local/bin), provide PROD_DIR
-# GIT_REPO=yogendra/dotfiles wget -qO- "https://raw.githubusercontent.com/${GIT_REPO}/master/scripts/jumpbox-init.sh?nocache"  | OM_PIVNET_TOKEN=DJHASLD7_HSDHA7 PROJ_DIR=/usr/local bash
+# GIT_REPO=yogendra/dotfiles wget -qO- "https://raw.githubusercontent.com/${GIT_REPO}/master/scripts/jumpbox-init.sh?nocache" | OM_PIVNET_TOKEN=DJHASLD7_HSDHA7 PROJ_DIR=/usr/local bash
 
 
 PROJ_DIR=${PROJ_DIR:-$HOME}
@@ -17,9 +17,8 @@ OM_PIVNET_TOKEN=${OM_PIVNET_TOKEN}
 echo PROJ_DIR=${PROJ_DIR}
 GITHUB_OPTIONS=${GITHUB_OPTIONS}
 [[ -d ${PROJ_DIR}/bin ]]  || mkdir -p ${PROJ_DIR}/bin
-GIT_REPO=${1:-https://raw.githubusercontent.com/yogendra/dotfiles/master/}
+GIT_REPO=${GIT_REPO:-yogendra/dotfiles}
 DOTFILES_DIR=${DOTFILES_DIR:-$HOME/code/dotfiles}
-
 
 sudo ln -fs /usr/share/zoneinfo/Asia/Singapore /etc/localtime
 
@@ -65,14 +64,7 @@ OS_TOOLS=(\
     )
 sudo apt update && sudo apt install -qqy "${OS_TOOLS[@]}"
 
-if [[ ! -d $DOTFILES_DIR ]]
-then
-  mkdir $DOTFILES_DIR
-  git clone https://github.com/${GIT_REPO}.git $DOTFILES_DIR
-  export $DOTFILES_DIR/scripts
-else
-  (cd $DOTFILES_DIR; git reset --hard; git pull --rebase)
-fi
+wget -qO- "https://raw.githubusercontent.com/${GIT_REPO}/master/scripts/dotfiles-init.sh?nocache"| bash
 
 VERSION_JSON=$(cat ${DOTFILES_DIR}/config/versions.json)
 function asset_version {
@@ -307,31 +299,6 @@ rm -rf $PROJ_DIR/aws
 echo Install  Azure client
 wget -qO- https://aka.ms/InstallAzureCLIDeb | sudo bash
 
-
-echo Setting 
-echo Setting Direnv
-ls -sf $DOTFILES_DIR/.direnvrc ${HOME}/.direnvrc
-
-echo Setting Vim
-ln -sf "${DOTFILES_DIR}/.vimrc" ${HOME}/.vimrc
-
-echo Setting TMUX
-ln -sf "${DOTFILES_DIR}/.tmux.conf" ${HOME}/.tmux.conf
-
-echo Setting SSH keys
-mkdir ~/.ssh
-cat ${DOTFILES_DIR}/raw/keys | while read key; do
-  wget -qO - "${key}" >> ${HOME}/.ssh/authorized_keys
-done
-sort $HOME/.ssh/authorized_keys | uniq > $HOME/.ssh/authorized_keys.uniq
-ln -sf $DOTFILES_DIR/.ssh/config $HOME/.ssh/config
-ln -sf $DOTFILES_DIR/.ssh/configs $HOME/.ssh/configs
-
-echo Setting Bash shell
-ln -sf $DOTFILES_DIR/.bashrc $HOME/.bashrc
-
-echo Setting Git config
-ln -sf $DOTFILES_DIR/.gitconfig $HOME/.gitconfig 
 
 echo Created workspace directory
 mkdir -p $PROJ_DIR/workspace/deployments
