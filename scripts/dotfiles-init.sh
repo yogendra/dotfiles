@@ -8,9 +8,8 @@ then
   then
     # DOTFILES_DIR does not exists
     echo Cloning dotfile repo
-    mkdir $DOTFILES_DIR
+    mkdir -p $DOTFILES_DIR
     git clone https://github.com/${GIT_REPO}.git $DOTFILES_DIR
-    export $DOTFILES_DIR/scripts
   elif [[ -d $DOTFILES_DIR/.git ]]
   then
     # DOTFILES_DIR exists and is connected to git    
