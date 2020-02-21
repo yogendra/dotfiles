@@ -10,13 +10,13 @@ else
 fi
 
 echo Setting Direnv
-ls -sf $DOTFILES_DIR/.direnvrc ${HOME}/.direnvrc
+ln -fs $DOTFILES_DIR/.direnvrc ${HOME}/.direnvrc
 
 echo Setting Vim
-ln -sf "${DOTFILES_DIR}/.vimrc" ${HOME}/.vimrc
+ln -fs "${DOTFILES_DIR}/.vimrc" ${HOME}/.vimrc
 
 echo Setting TMUX
-ln -sf "${DOTFILES_DIR}/.tmux.conf" ${HOME}/.tmux.conf
+ln -fs "${DOTFILES_DIR}/.tmux.conf" ${HOME}/.tmux.conf
 
 echo Setting SSH
 mkdir ~/.ssh
@@ -24,29 +24,11 @@ cat ${DOTFILES_DIR}/raw/keys | while read key; do
   wget -qO - "${key}" >> ${HOME}/.ssh/authorized_keys
 done
 sort $HOME/.ssh/authorized_keys | uniq > $HOME/.ssh/authorized_keys.uniq
-ln -sf $DOTFILES_DIR/.ssh/config $HOME/.ssh/config
-ln -sf $DOTFILES_DIR/.ssh/configs $HOME/.ssh/configs
+ln -fs $DOTFILES_DIR/.ssh/config $HOME/.ssh/config
+ln -fs $DOTFILES_DIR/.ssh/configs $HOME/.ssh/configs
 
 echo Setting Bash shell
-ln -sf $DOTFILES_DIR/.bashrc $HOME/.bashrc
+ln -fs $DOTFILES_DIR/.bashrc $HOME/.bashrc
 
 echo Setting Git config
-ln -sf $DOTFILES_DIR/.gitconfig $HOME/.gitconfig 
-
-echo Created workspace directory
-mkdir -p $PROJ_DIR/workspace/deployments
-mkdir -p $PROJ_DIR/workspace/tiles
-
-
-echo <<EOF
-Create your SSH keys
-===============================================================================
-[[ ! -f ${HOME}/.ssh/id_rsa ]] && \
-  ssh-keygen  -q -t rsa -N "" -f ${HOME}/.ssh/id_rsa && \
-  cat ${HOME}/.ssh/id_rsa.pub >> ${HOME}/.ssh/authorized_keys
-
-[[ ! -f ${HOME}/.ssh/id_dsa ]] && \
-  ssh-keygen  -q -t dsa -N "" -f ${HOME}/.ssh/id_dsa && \
-  cat ${HOME}/.ssh/id_dsa.pub  >> ${HOME}/.ssh/authorized_keys
-
-EOF
+ln -fs $DOTFILES_DIR/.gitconfig $HOME/.gitconfig 
