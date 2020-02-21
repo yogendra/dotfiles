@@ -1,5 +1,5 @@
 FROM ubuntu:latest
-ARG build_secret_location=http://secrets-server/secrets.txt
+ARG build_secret_location=http://secrets-server/secrets.sh
 ADD sources.list /etc/apt/sources.list
 
 RUN set -e && \
