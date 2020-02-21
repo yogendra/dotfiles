@@ -1,33 +1,38 @@
 #!/usr/bin/env bash
 DOTFILES_DIR=${DOTFILES_DIR:-$HOME/code/dotfiles}
 GIT_REPO=${GIT_REPO:-yogendra/dotfile}
-if [[ command -v git ]] ; then
+if [[ -x $(command -v git) ]] 
+then
   # If git is available
   if [[ ! -d $DOTFILES_DIR ]]
-  # DOTFILES_DIR does not exists
   then
+    # DOTFILES_DIR does not exists
+    echo Cloning dotfile repo
     mkdir $DOTFILES_DIR
     git clone https://github.com/${GIT_REPO}.git $DOTFILES_DIR
     export $DOTFILES_DIR/scripts
   elif [[ -d $DOTFILES_DIR/.git ]]
-  # DOTFILES_DIR exists and is connected to git
-    (
-      cd $DOTFILES_DIR
-      git reset --hard; git pull --rebase
-    )
+  then
+    # DOTFILES_DIR exists and is connected to git    
+    echo Update cloned dotfiles
+    cd $DOTFILES_DIR
+    git reset --hard
+    git pull --rebase
+    cd -
   else
-  # DOTFILES_DIR exists but not connected to git
-    (
-      cd $DOTFILES_DIR
-      git init
-      git remote add origin  https://github.com/${GIT_REPO}.git
-      git fetch origin
-      git checkout -b master --track origin/master
-      git reset origin/master
-    )
+    # DOTFILES_DIR exists but not connected to git    
+    echo Connecting and updating dotfiles
+    cd $DOTFILES_DIR
+    git init
+    git remote add origin  https://github.com/${GIT_REPO}.git
+    git fetch origin
+    git checkout -b master --track origin/master
+    git reset origin/master
+    cd -
   fi
 else 
-# No git
+  # No git
+  echo Download dotfile repo
   mkdir -p $DOTFILES_DIR
   wget -qO- https://github.com/$GIT_REPO/tarball/master | tar xz -C $DOTFILES_DIR
   REPO_SLUG=${GIT_REPO/\//-}
@@ -47,10 +52,8 @@ ln -fs "${DOTFILES_DIR}/.tmux.conf" ${HOME}/.tmux.conf
 
 echo Setting SSH
 mkdir ~/.ssh
-cat ${DOTFILES_DIR}/raw/keys | while read key; do
-  wget -qO - "${key}" >> ${HOME}/.ssh/authorized_keys
-done
-sort $HOME/.ssh/authorized_keys | uniq > $HOME/.ssh/authorized_keys.uniq
+cat ${DOTFILES_DIR}/config/keys >> ${HOME}/.ssh/authorized_keys
+sort $HOME/.ssh/authorized_keys | uniq > $HOME/.ssh/authorized_keys
 ln -fs $DOTFILES_DIR/.ssh/config $HOME/.ssh/config
 ln -fs $DOTFILES_DIR/.ssh/configs $HOME/.ssh/configs
 
