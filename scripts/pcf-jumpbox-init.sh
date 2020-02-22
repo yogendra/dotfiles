@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
-# Set 2 Environment variables
-#  PROJ_DIR : Project Directory. All tools will get install under PROJ_DIR/bin. (defaults: $HOME)
-#  OM_PIVNET_TOKEN: Pivotal Network Token (required) Its **NOT** ending with -r. It looks like DJHASLD7_HSDHA7
-#  GITHUB_OPTIONS: (Optional) Provide github userid and token for accessing API. 
+# Set these Environment variables
+#  PROJ_DIR         : Project Directory. All tools will get install under PROJ_DIR/bin. (default: $HOME)
+#  OM_PIVNET_TOKEN  : Pivotal Network Token (required) Its **NOT** ending with -r. It looks like DJHASLD7_HSDHA7 (default: none)
+#  GITHUB_OPTIONS   : (Optional) Provide github userid and token for accessing API. (default: none)
+#  TIMEZONE         : Timezone of the host (default:Asua/Singapore)
+#  GIT_REPO         : Git repository to use for supporting items (default: yogendra/dotfiles)
+#  DOTFILES_DIR     : Location to put dotfiles (default: $HOME/code/dotfiles)
+
 # Run
 # GIT_REPO=yogendra/dotfiles wget -qO- "https://raw.githubusercontent.com/${GIT_REPO}/master/scripts/jumpbox-init.sh?nocache"  | OM_PIVNET_TOKEN=DJHASLD7_HSDHA7 bash
 # Or to put binaries at your preferred location (example: /usr/local/bin), provide PROD_DIR
@@ -19,8 +23,9 @@ GITHUB_OPTIONS=${GITHUB_OPTIONS}
 [[ -d ${PROJ_DIR}/bin ]]  || mkdir -p ${PROJ_DIR}/bin
 GIT_REPO=${GIT_REPO:-yogendra/dotfiles}
 DOTFILES_DIR=${DOTFILES_DIR:-$HOME/code/dotfiles}
+TIMEZONE=${TIMEZONE:-Asia/Singapore}
 
-sudo ln -fs /usr/share/zoneinfo/Asia/Singapore /etc/localtime
+sudo ln -fs /usr/share/zoneinfo/$TIMEZONE /etc/localtime
 
 echo Install basic tools for the jumpbox
 OS_TOOLS=(\
