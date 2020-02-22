@@ -1,15 +1,18 @@
 #!/usr/bin/env bash
 DOTFILES_DIR=${DOTFILES_DIR:-$HOME/code/dotfiles}
-GIT_REPO=${GIT_REPO:-yogendra/dotfile}
+GIT_REPO=${GIT_REPO:-yogendra/dotfiles}
 if [[ -x $(command -v git) ]] 
 then
   # If git is available
   if [[ ! -d $DOTFILES_DIR ]]
   then
     # DOTFILES_DIR does not exists
-    echo Cloning dotfile repo
+    echo Cloning dotfiles repo
     mkdir -p $DOTFILES_DIR
-    git clone https://github.com/${GIT_REPO}.git $DOTFILES_DIR
+    [[ -d $HOME/.ssh ]] || mkdir -p $HOME/.ssh
+    ssh-keyscan -H github.com >> $HOME/.ssh/known_hosts
+    git clone -q git://github.com/${GIT_REPO}.git $DOTFILES_DIR
+    
   elif [[ -d $DOTFILES_DIR/.git ]]
   then
     # DOTFILES_DIR exists and is connected to git    
@@ -50,7 +53,7 @@ echo Setting TMUX
 ln -fs "${DOTFILES_DIR}/.tmux.conf" ${HOME}/.tmux.conf
 
 echo Setting SSH
-mkdir ~/.ssh
+[[ -d $HOME/.ssh ]] || mkdir -p $HOME/.ssh
 cat ${DOTFILES_DIR}/config/keys >> ${HOME}/.ssh/authorized_keys
 sort $HOME/.ssh/authorized_keys | uniq > $HOME/.ssh/authorized_keys
 ln -fs $DOTFILES_DIR/.ssh/config $HOME/.ssh/config
