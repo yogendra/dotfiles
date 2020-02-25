@@ -11,11 +11,11 @@ fi
 
 
 # These must be explicitly stopped due to nfs_mounter blocking as of 1.6.17
-declare -a bootOrder=(
-cloud_controller
-clock_global
-cloud_controller_worker
-)
+# declare -a bootOrder=(
+# cloud_controller
+# clock_global
+# cloud_controller_worker
+# )
 
 
 if [ $1 == "shut" ]; then
