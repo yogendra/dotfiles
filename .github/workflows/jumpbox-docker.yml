@@ -1,20 +1,55 @@
-name: CI
+name: Jumpbox Docker Build
 
 on: [push]
 
 jobs:
-  build:
-
+  checkout:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
-    - name: Build Docker Image
-      run: |
-        docker build -t yogendra/pcf-tools:latest .
-    - name: Test Docker Image
-      run: |
-        echo WIP
-    - name: Push Docker Image
-      run: |
-        docker push yogendra/pcf-tools:latest
+    - run: |
+        env
+        pwd        
+        ls -l      
+    - run: |
+        echo "${{ secrets.SECRETS_TXT }}" >> $GITHUB_WORKSPACE/secrets.txt  
+    - run: |
+        env
+        pwd        
+        ls -l
+        wc -l $GITHUB_WORKSPACE/secrets.txt
+#   build:
+#     services:
+#       secrets_service:
+#         image: nginx
+#         ports: 
+#         - 80
+#         volumes: 
+#         - $GITHUB_WORKSPACE:/usr/share/nginx/html:ro  
+#     runs-on: ubuntu-latest
+#     steps:
+#     - name: Run Secrets container
+#       run: |
+#         docker 
+#         docker run --name secrets-server --rm --volume :/usr/share/nginx/html:ro -d nginx
+#     - name: Build Docker Image
+#       run: |
+#         docker build -t --arg yogendra/pcf-tools:latest .
+#   test:
+#     runs-on: ubuntu-latest    
+#     steps:
+#     - name: Test Docker Image
+#       run: |
+#         echo WIP
+#   push: 
+#     runs-on: ubuntu-latest
+#     steps:
+#     - name: Docker Login
+#       uses: Azure/docker-login@v1
+#       with:
+#         username: ${{ secrets.REGISTRY_USERNAME }}
+#         password: ${{ secrets.REGISTRY_PASSWORD }}
+#         login-server: docker.io
+#     - name: Push Docker Image
+#       run: |
+#         docker push yogendra/pcf-tools:latest
