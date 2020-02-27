@@ -18,7 +18,7 @@ WORKDIR /home/pcf
 RUN set -e &&\
     echo Secrets Locations: $build_secret_location // Git Repo: $git_repo && \
     wget --help && \
-    eval $(wget -qO- $build_secret_location) && \
+    eval "$(wget -qO- $build_secret_location)" && \
     wget -qO- "https://raw.githubusercontent.com/$git_repo/master/scripts/pcf-jumpbox-init.sh?$RANDOM" |  bash && \
     sudo rm -rf /var/lib/apt/lists/* 
 
