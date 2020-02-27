@@ -26,7 +26,7 @@ jobs:
     steps:
     - name: Check secrets container connection
       run: |
-        docker run --rm -t busybox  wget -vO- http://secrets-server/Dockerfile 
+        docker run --rm -t busybox  wget -SO- http://secrets-server/Dockerfile 
         
 #       run: |
 #         docker 
