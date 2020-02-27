@@ -16,7 +16,7 @@ jobs:
     
   build:
     services:
-      secrets_server:
+      secrets-server:
         image: nginx
         ports: 
         - 80:80
