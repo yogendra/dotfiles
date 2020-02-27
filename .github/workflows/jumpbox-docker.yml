@@ -26,8 +26,12 @@ jobs:
     steps:
     - name: Check secrets container connection
       run: |
+        docker network ls 
+        # network label e87b52
+        DOCKER_BUILD_NETWORK=docker network ls -f label=e87b52 --format "{{.Name}}" | head -1
+        echo Build Network: $DOCKER_BUILD_NETWORK
         echo ${{ job.services.secrets_server.ports[80] }}
-        docker run --rm -t busybox  wget -SO- http://secrets-server/Dockerfile 
+        docker run --network $DOCKER_BUILD_NETWORK --rm -t busybox  wget -SO- http://secrets-server/Dockerfile 
         
 #       run: |
 #         docker 
