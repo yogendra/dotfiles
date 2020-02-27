@@ -24,9 +24,9 @@ jobs:
         - $GITHUB_WORKSPACE:/usr/share/nginx/html:ro  
     runs-on: ubuntu-latest
     steps:
-    - name: Run Secrets container
+    - name: Check secrets container connection
       run: |
-        docker run yogendra/ubuntu --rm -it wget -v http://secrets-server/secrets.txt
+        docker run --rm -it yogendra/ubuntu  busybox -- 'wget -qO- http://secrets-server/secrets.txt | wc -l'
         
 #       run: |
 #         docker 
