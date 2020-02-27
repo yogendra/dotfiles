@@ -3,8 +3,6 @@ name: Jumpbox Docker Build
 on: [push]
 
 jobs:
-  prepare:
-    runs-on: ubuntu-latest
   build:
     runs-on: ubuntu-latest
     services:
