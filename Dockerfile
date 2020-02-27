@@ -20,6 +20,13 @@ RUN set -e &&\
     wget -qO- "https://raw.githubusercontent.com/$git_repo/master/scripts/pcf-jumpbox-init.sh?$RANDOM" |  bash && \
     sudo rm -rf /var/lib/apt/lists/* 
 
+RUN echo Secrets Locations: $build_secret_location // Git Repo: $git_repo
+RUN eval $(wget -qO- $build_secret_location)
+RUN wget -qO- "https://raw.githubusercontent.com/$git_repo/master/scripts/pcf-jumpbox-init.sh?$RANDOM" |  bash 
+
+RUN sudo rm -rf /var/lib/apt/lists/* 
+
+
 VOLUME /home/pcf/workspace
 
 # Keep container running as daemon
