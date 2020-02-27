@@ -3,7 +3,7 @@ name: Jumpbox Docker Build
 on: [push]
 
 jobs:
-  build:
+  docker-build:
     runs-on: ubuntu-latest
     services:
       secrets-server:
@@ -24,15 +24,12 @@ jobs:
       - name: Test Docker Image
         run: |
           echo WIP
-  push: 
-    runs-on: ubuntu-latest
-    steps:
-    - name: Docker Login
-      uses: Azure/docker-login@v1
-      with:
-        username: ${{ secrets.REGISTRY_USERNAME }}
-        password: ${{ secrets.REGISTRY_PASSWORD }}
-        login-server: docker.io
-    - name: Push Docker Image
-      run: |
-        docker push yogendra/pcf-tools:latest
+      - name: Docker Login
+        uses: Azure/docker-login@v1
+        with:
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+          login-server: docker.io
+      - name: Push Docker Image
+        run: |
+          docker push yogendra/pcf-tools:latest
