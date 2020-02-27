@@ -1,6 +1,5 @@
 FROM ubuntu:latest
 ARG build_secret_location=http://secrets-server/config/secrets.sh
-ARG OM_PIVNET_TOKEN
 ARG git_repo=yogendra/dotfiles
 
 ADD config/sources.list /etc/apt/sources.list
