@@ -1,5 +1,6 @@
 FROM ubuntu:latest
 ARG build_secret_location=http://secrets-server/config/secrets.sh
+ARG OM_PIVNET_TOKEN
 ARG git_repo=yogendra/dotfiles
 
 ADD config/sources.list /etc/apt/sources.list
@@ -16,10 +17,9 @@ ENV PROJ_DIR=/home/pcf
 WORKDIR /home/pcf
 
 RUN set -e &&\
+    eval $(wget -qO- $build_secret_location) && \
     wget -qO- "https://raw.githubusercontent.com/$git_repo/master/scripts/pcf-jumpbox-init.sh?$RANDOM" |  bash && \
     sudo rm -rf /var/lib/apt/lists/* 
-
-RUN sudo rm -rf /var/lib/apt/lists/* 
 
 
 VOLUME /home/pcf/workspace
