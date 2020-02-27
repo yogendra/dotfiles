@@ -27,7 +27,7 @@ jobs:
     - name: Check secrets container connection
       run: |
         # network label e87b52
-        docker exec -t secrets-server -- ls -l /usr/share/nginx/html
+        docker exec -t secrets-server ls -- -l /usr/share/nginx/html
         DOCKER_BUILD_NETWORK=$(docker network ls -f label=e87b52 --format "{{.Name}}" | head -1)
         docker run --network $DOCKER_BUILD_NETWORK --rm -t busybox  wget -SO- http://secrets-server/Dockerfile 
         
