@@ -26,7 +26,7 @@ jobs:
     steps:
     - name: Check secrets container connection
       run: |
-        docker run --rm -t yogendra/ubuntu  busybox -- 'wget -qO- http://secrets-server/secrets.txt | wc -l'
+        docker run --rm -t busybox -- 'wget -qO- http://secrets-server/secrets.txt | wc -l'
         
 #       run: |
 #         docker 
