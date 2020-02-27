@@ -16,16 +16,17 @@ jobs:
     
   build:
     services:
-      secrets_service:
+      secrets_server:
         image: nginx
         ports: 
-        - 80
+        - 80:80
         volumes: 
         - $GITHUB_WORKSPACE:/usr/share/nginx/html:ro  
     runs-on: ubuntu-latest
     steps:
     - name: Check secrets container connection
       run: |
+        echo ${{ job.services.secrets_server.ports[80] }}
         docker run --rm -t busybox  wget -SO- http://secrets-server/Dockerfile 
         
 #       run: |
