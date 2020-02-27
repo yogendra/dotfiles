@@ -9,8 +9,8 @@ jobs:
     - uses: actions/checkout@v2
   prepare: 
     runs-on: ubuntu-latest
-      steps:
-      - name: Prepare Secrets
+    steps:
+    - name: Prepare Secrets
       run: |
         echo "${{ secrets.SECRETS_TXT }}" >> $GITHUB_WORKSPACE/secrets.txt  
     
