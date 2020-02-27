@@ -16,12 +16,14 @@ jobs:
     
   build:
     services:
-      secrets-server:
+      secrets-server:        
         image: nginx
         ports: 
         - 80:80
-        volumes: 
-        - $GITHUB_WORKSPACE:/usr/share/nginx/html:ro  
+#         volumes: 
+#         - $GITHUB_WORKSPACE:/usr/share/nginx/html:ro  
+        options:  -v ${{ github.workspace }}:/usr/share/nginx/html:ro --name secrets-server --hostname secrets-server
+
     runs-on: ubuntu-latest
     steps:
     - name: Check secrets container connection
