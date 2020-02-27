@@ -3,30 +3,47 @@ name: Jumpbox Docker Build
 on: [push]
 
 jobs:
-  build:
-    services:
-      secrets-server:        
-        image: nginx
-        ports: 
-        - 80:80
-        options:  -v ${{ github.workspace }}:/usr/share/nginx/html:ro --name secrets-server --hostname secrets-server
-
+  prepare:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Source Code
-      uses: actions/checkout@v2
-    - name: Prepare Secrets
-      run: |
-        echo "${{ secrets.SECRETS_TXT }}" >> $GITHUB_WORKSPACE/secrets.txt   
-    - name: Check secrets container connection
-      run: |
-        # network label e87b52
-        DOCKER_BUILD_NETWORK=$(docker network ls -f label=e87b52 --format "{{.Name}}" | head -1)
-        docker run --network $DOCKER_BUILD_NETWORK --rm -t busybox  wget -SO- http://secrets-server/         
-    - name: Build Docker Image
-      run: |
-        DOCKER_BUILD_NETWORK=$(docker network ls -f label=e87b52 --format "{{.Name}}" | head -1)  
-        docker build -t yogendra/pcf-tools:latest .
+      - name: Checkout Source Code
+        uses: actions/checkout@v2
+      - name: Prepare Secrets
+        run: |
+          echo "${{ secrets.SECRETS_TXT }}" >> $GITHUB_WORKSPACE/secrets.txt
+  build:
+    runs-on: ubuntu-latest
+    services:
+      secrets-server:
+        image: nginx
+        ports: 
+          - 80:80
+        options:  -v ${{ github.workspace }}:/usr/share/nginx/html:ro --name secrets-server --hostname secrets-server
+    steps:
+      - name: debug - pre checkout
+        run: | 
+          ls -l 
+          pwd
+          ls -l ${{ github.workspace }}
+      - name: Checkout Source Code
+        uses: actions/checkout@v2
+      - name: debug - post checkout
+        run: | 
+          ls -l 
+          pwd
+          ls -l ${{ github.workspace }}
+      - name: Prepare Secrets
+        run: |
+          echo "${{ secrets.SECRETS_TXT }}" >> $GITHUB_WORKSPACE/secrets.txt   
+      - name: Check secrets container connection
+        run: |
+          # network label e87b52
+          DOCKER_BUILD_NETWORK=$(docker network ls -f label=e87b52 --format "{{.Name}}" | head -1)
+          docker run --network $DOCKER_BUILD_NETWORK --rm -t busybox  wget -SO- http://secrets-server/         
+      - name: Build Docker Image
+        run: |
+          DOCKER_BUILD_NETWORK=$(docker network ls -f label=e87b52 --format "{{.Name}}" | head -1)  
+          docker build -t yogendra/pcf-tools:latest .
   test:
     runs-on: ubuntu-latest    
     steps:
