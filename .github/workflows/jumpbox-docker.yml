@@ -21,39 +21,27 @@ jobs:
     - name: Check secrets container connection
       run: |
         # network label e87b52
-        echo Environemnt vars
-        env
-        echo List directory
-        ls -l
-        echo List with macro
-        ls -l ${{ github.workspace }}
-        echo List with env var
-        ls -l $GITHUB_WORKSPACE
-        docker exec -t secrets-server ls -l /usr/share/nginx/html
         DOCKER_BUILD_NETWORK=$(docker network ls -f label=e87b52 --format "{{.Name}}" | head -1)
-        docker run --network $DOCKER_BUILD_NETWORK --rm -t busybox  wget -SO- http://secrets-server/Dockerfile 
-        
-#       run: |
-#         docker 
-#         docker run --name secrets-server --rm --volume :/usr/share/nginx/html:ro -d nginx
-#     - name: Build Docker Image
-#       run: |
-#         docker build -t --arg yogendra/pcf-tools:latest .
-#   test:
-#     runs-on: ubuntu-latest    
-#     steps:
-#     - name: Test Docker Image
-#       run: |
-#         echo WIP
-#   push: 
-#     runs-on: ubuntu-latest
-#     steps:
-#     - name: Docker Login
-#       uses: Azure/docker-login@v1
-#       with:
-#         username: ${{ secrets.REGISTRY_USERNAME }}
-#         password: ${{ secrets.REGISTRY_PASSWORD }}
-#         login-server: docker.io
-#     - name: Push Docker Image
-#       run: |
-#         docker push yogendra/pcf-tools:latest
+        docker run --network $DOCKER_BUILD_NETWORK --rm -t busybox  wget -SO- http://secrets-server/         
+    - name: Build Docker Image
+      run: |
+        DOCKER_BUILD_NETWORK=$(docker network ls -f label=e87b52 --format "{{.Name}}" | head -1)  
+        docker build -t yogendra/pcf-tools:latest .
+  test:
+    runs-on: ubuntu-latest    
+    steps:
+    - name: Test Docker Image
+      run: |
+        echo WIP
+  push: 
+    runs-on: ubuntu-latest
+    steps:
+    - name: Docker Login
+      uses: Azure/docker-login@v1
+      with:
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+        login-server: docker.io
+    - name: Push Docker Image
+      run: |
+        docker push yogendra/pcf-tools:latest
