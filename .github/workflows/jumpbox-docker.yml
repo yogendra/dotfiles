@@ -3,17 +3,6 @@ name: Jumpbox Docker Build
 on: [push]
 
 jobs:
-  checkout:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-  prepare: 
-    runs-on: ubuntu-latest
-    steps:
-    - name: Prepare Secrets
-      run: |
-        echo "${{ secrets.SECRETS_TXT }}" >> $GITHUB_WORKSPACE/secrets.txt  
-    
   build:
     services:
       secrets-server:        
@@ -24,6 +13,11 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout Source Code
+      uses: actions/checkout@v2
+    - name: Prepare Secrets
+      run: |
+        echo "${{ secrets.SECRETS_TXT }}" >> $GITHUB_WORKSPACE/secrets.txt   
     - name: Check secrets container connection
       run: |
         # network label e87b52
