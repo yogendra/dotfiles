@@ -7,28 +7,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: |
-        env
-        pwd        
-        ls -l      
-    - run: |
+  prepare: 
+    runs-on: ubuntu-latest
+      steps:
+      - name: Prepare Secrets
+      run: |
         echo "${{ secrets.SECRETS_TXT }}" >> $GITHUB_WORKSPACE/secrets.txt  
-    - run: |
-        env
-        pwd        
-        ls -l
-        wc -l $GITHUB_WORKSPACE/secrets.txt
-#   build:
-#     services:
-#       secrets_service:
-#         image: nginx
-#         ports: 
-#         - 80
-#         volumes: 
-#         - $GITHUB_WORKSPACE:/usr/share/nginx/html:ro  
-#     runs-on: ubuntu-latest
-#     steps:
-#     - name: Run Secrets container
+    
+  build:
+    services:
+      secrets_service:
+        image: nginx
+        ports: 
+        - 80
+        volumes: 
+        - $GITHUB_WORKSPACE:/usr/share/nginx/html:ro  
+    runs-on: ubuntu-latest
+    steps:
+    - name: Run Secrets container
+      run: |
+        docker run yogendra/ubuntu --rm -it wget -v http://secrets-server/secrets.txt
+        
 #       run: |
 #         docker 
 #         docker run --name secrets-server --rm --volume :/usr/share/nginx/html:ro -d nginx
