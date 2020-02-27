@@ -23,7 +23,7 @@ You will require:
 
 1. Docker on you machine
 
-1. Create a file named `secrets.txt` with content like following:
+1. Create a file named `secrets.txt` in `config` directory, with following content:
 
    ```bash filename=secrets.txt
    export GIST_URL="https://gist.github.com/yogendra/318c09f0cd2548bdd07f592722c9bbec"
@@ -32,6 +32,8 @@ You will require:
 
    ```
 
+   Put correct token, username and password
+
    - `GITHUB_OPTIONS` is optional and should be used if you run into API limit restrictions.
 
 1. You may need to copy secrets file to docker host in case you are running a VM
@@ -39,7 +41,7 @@ You will require:
    - Docker machine (Example: Machine name `myci`, host directory `/home/docker-user`)
 
      ```bash
-     docker-machine scp secrets.txt myci:/home/docker-user/secrets.txt
+     docker-machine scp config/secrets.txt myci:/home/docker-user/secrets.txt
      ```
 
 1. Create a docker network
