@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Prepare Secrets
         run: |
-          echo "${{ secrets.SECRETS_TXT }}" >> $GITHUB_WORKSPACE/config/secrets.sh
+          echo "${{ secrets.SECRETS_SH }}" >> $GITHUB_WORKSPACE/config/secrets.sh
       - name: Build Docker Image
         run: |
           DOCKER_BUILD_NETWORK=$(docker network ls -f label=e87b52 --format "{{.Name}}" | head -1)  
