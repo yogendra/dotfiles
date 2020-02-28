@@ -15,8 +15,9 @@ function om-install(){
     tile_path=$(jq -r '.product_path' $download_file)
     tile_version=$(jq -r '.product_version' $download_file)
     tile_slug=$(jq -r '.product_slug' $download_file)
+    stemcell_path=$(jq -r '.stemcell_path' $download_file)
     om -k upload-product -p $tile_path  
-
+    [[ -n $stemcell_path ]] && om -k upload-stemcell  -s $stemcell_path
 }
 if [[ $# -lt 2 ]]; then
     cat <<EOF
