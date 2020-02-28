@@ -3,15 +3,15 @@
 # wget -qO- "https://gist.github.com/yogendra/318c09f0cd2548bdd07f592722c9bbec/raw/om-install.sh"  | bash
 
 PCF_IAAS=${PCF_IAAS:-google}
-TILE_DIR=${TILE_DIR:-$PWD}
-download_file=$TILE_DIR/download-file.json
+TILES_DIR=${TILE_DIR:-$PWD}
+download_file=$TILES_DIR/download-file.json
 
 function om-install(){
     product=$1
     fileglob=$2
     version=${3:-`pivnet rs -p $product -l 1 -o json | jq -r '.[0].version'`}
     echo "Download $product :: $version ($fileglob)"
-    om download-product --pivnet-api-token $OM_PIVNET_TOKEN  --product $product --product-version $version --pivnet-file-glob $fileglob --download-stemcell --stemcell-iaas=$PCF_IAAS
+    om download-product --pivnet-api-token $OM_PIVNET_TOKEN  --product $product --product-version $version --pivnet-file-glob $fileglob --download-stemcell --stemcell-iaas=$PCF_IAAS --output-directory $TILES_DIR
     tile_path=$(jq -r '.product_path' $download_file)
     tile_version=$(jq -r '.product_version' $download_file)
     tile_slug=$(jq -r '.product_slug' $download_file)
