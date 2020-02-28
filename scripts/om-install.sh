@@ -11,13 +11,12 @@ function om-install(){
     fileglob=$2
     version=${3:-`pivnet rs -p $product -l 1 -o json | jq -r '.[0].version'`}
     echo "Download $product :: $version ($fileglob)"
-    cat << EOF 
     om download-product --pivnet-api-token $OM_PIVNET_TOKEN  -p $product -v $version -f $fileglob --download-stemcell --stemcell-iaas $PCF_IAAS --output-directory $TILES_DIR
     tile_path=$(jq -r '.product_path' $download_file)
     tile_version=$(jq -r '.product_version' $download_file)
     tile_slug=$(jq -r '.product_slug' $download_file)
     om -k upload-product -p $tile_path  
-EOF
+
 }
 if [[ $# -lt 2 ]]; then
     cat <<EOF
