@@ -4,20 +4,25 @@
 
 PCF_IAAS=${PCF_IAAS:-google}
 TILES_DIR=${TILE_DIR:-$PWD}
-download_file=$TILES_DIR/download-file.json
 
 function om-install(){
     product=$1
     fileglob=$2
     version=${3:-`pivnet rs -p $product -l 1 -o json | jq -r '.[0].version'`}
     echo "Download $product :: $version ($fileglob)"
+    TILE_DIR=$(mktemp -d)
     om download-product --pivnet-api-token $OM_PIVNET_TOKEN  -p $product -v $version -f $fileglob --download-stemcell --stemcell-iaas $PCF_IAAS --output-directory $TILES_DIR
+    download_file=$TILES_DIR/download-file.json
+    assign_stemcell_path=$TILES_DIR/assign-stemcell.yml
     tile_path=$(jq -r '.product_path' $download_file)
     tile_version=$(jq -r '.product_version' $download_file)
     tile_slug=$(jq -r '.product_slug' $download_file)
     stemcell_path=$(jq -r '.stemcell_path' $download_file)
+    stemcell_version=$(jq -r '.stemcell' $assign_stemcell_path)
     om -k upload-product -p $tile_path  
     [[ -n $stemcell_path ]] && om -k upload-stemcell  -s $stemcell_path
+    (rm $download_file $assign_stemcell_path $tile_path $stemcell_path)
+
 }
 if [[ $# -lt 2 ]]; then
     cat <<EOF
