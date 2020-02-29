@@ -10,7 +10,7 @@ function om-install(){
     fileglob=$2
     version=${3:-`pivnet rs -p $product -l 1 -o json | jq -r '.[0].version'`}
     echo "Download $product :: $version ($fileglob)"
-    PRODUCT_TILE_DIR$TILES_DIR/$1 
+    PRODUCT_TILE_DIR=$TILES_DIR/$1 
     mkdir -p $PRODUCT_TILE_DIR
     om download-product --pivnet-api-token $OM_PIVNET_TOKEN  -p $product -v $version -f $fileglob --download-stemcell --stemcell-iaas $PCF_IAAS --output-directory $PRODUCT_TILE_DIR
     download_file=$PRODUCT_TILE_DIR/download-file.json
