@@ -3,14 +3,13 @@
 # wget -qO- "https://gist.github.com/yogendra/318c09f0cd2548bdd07f592722c9bbec/raw/om-install.sh"  | bash
 
 PCF_IAAS=${PCF_IAAS:-google}
-TILES_DIR=${TILE_DIR:-$PWD}
 
 function om-install(){
     product=$1
     fileglob=$2
     version=${3:-`pivnet rs -p $product -l 1 -o json | jq -r '.[0].version'`}
     echo "Download $product :: $version ($fileglob)"
-    TILE_DIR=$(mktemp -d)
+    TILES_DIR=$(mktemp -d)
     om download-product --pivnet-api-token $OM_PIVNET_TOKEN  -p $product -v $version -f $fileglob --download-stemcell --stemcell-iaas $PCF_IAAS --output-directory $TILES_DIR
     download_file=$TILES_DIR/download-file.json
     assign_stemcell_path=$TILES_DIR/assign-stemcell.yml
@@ -22,7 +21,7 @@ function om-install(){
     om -k upload-product -p $tile_path  
     [[ -n $stemcell_path ]] && om -k upload-stemcell  -s $stemcell_path
     (rm $download_file $assign_stemcell_path $tile_path $stemcell_path)
-
+    rm -rf $TILES_DIR
 }
 if [[ $# -lt 2 ]]; then
     cat <<EOF
