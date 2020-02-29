@@ -3,7 +3,7 @@
 # wget -qO- "https://gist.github.com/yogendra/318c09f0cd2548bdd07f592722c9bbec/raw/om-install.sh"  | bash
 
 PCF_IAAS=${PCF_IAAS:-google}
-TILES_DIR=${TILES_DIR:$HOME/workspace/tiles}
+TILES_DIR=${TILES_DIR:-$HOME/workspace/tiles}
 
 function om-install(){
     product=$1
