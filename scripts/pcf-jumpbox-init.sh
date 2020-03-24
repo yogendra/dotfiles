@@ -19,7 +19,7 @@ export PATH=${PATH}:${PROJ_DIR}/bin
 OM_PIVNET_TOKEN=${OM_PIVNET_TOKEN}
 [[ -z ${OM_PIVNET_TOKEN} ]] && echo "OM_PIVNET_TOKEN environment variable not set. See instructions at https://github.com/yogendra/dotfiles/blob/master/README-PCF-TOOLS.md" && exit 1
 echo PROJ_DIR=${PROJ_DIR}
-GITHUB_OPTIONS=${GITHUB_OPTIONS}
+GITHUB_OPTIONS="${GITHUB_OPTIONS}"
 [[ -d ${PROJ_DIR}/bin ]]  || mkdir -p ${PROJ_DIR}/bin
 GIT_REPO=${GIT_REPO:-yogendra/dotfiles}
 DOTFILES_DIR=${DOTFILES_DIR:-$HOME/code/dotfiles}
