@@ -2,7 +2,7 @@
 # Set these Environment variables
 #  PROJ_DIR            : Project Directory. All tools will get install under PROJ_DIR/bin. (default: $HOME)
 #  PIVNET_LEGACY_TOKEN : Pivotal Network Token (required) Its **NOT** ending with -r. It looks like DJHASLD7_HSDHA7 (default: none)
-#  GITHUB_OPTIONS      : (Optional) Provide github userid and token for accessing API. (default: none)
+#  GITHUB_TOKEN        : (Optional) Provide github token for accessing API. (default: none)
 #  TIMEZONE            : Timezone of the host (default:Asua/Singapore)
 #  GIT_REPO            : Git repository to use for supporting items (default: yogendra/dotfiles)
 #  DOTFILES_DIR        : Location to put dotfiles (default: $HOME/code/dotfiles)
@@ -19,7 +19,10 @@ export PATH=${PATH}:${PROJ_DIR}/bin
 PIVNET_LEGACY_TOKEN=${PIVNET_LEGACY_TOKEN}
 [[ -z ${PIVNET_LEGACY_TOKEN} ]] && echo "PIVNET_LEGACY_TOKEN environment variable not set. See instructions at https://github.com/yogendra/dotfiles/blob/master/README-PCF-TOOLS.md" && exit 1
 echo PROJ_DIR=${PROJ_DIR}
-GITHUB_OPTIONS="${GITHUB_OPTIONS}"
+GITHUB_OPTIONS=""
+[[ -n $GITHUB_TOKEN ]] && GITHUB_OPTIONS=" --header 'authorization: Bearer $GITHUB_TOKEN'"
+
+
 [[ -d ${PROJ_DIR}/bin ]]  || mkdir -p ${PROJ_DIR}/bin
 GIT_REPO=${GIT_REPO:-yogendra/dotfiles}
 DOTFILES_DIR=${DOTFILES_DIR:-$HOME/code/dotfiles}
