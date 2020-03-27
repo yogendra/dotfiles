@@ -1,0 +1,120 @@
+{
+  "bat": {
+    "source": "github",
+    "url": "https://github.com/sharkdp/bat/releases/download/v0.13.0/bat-v0.13.0-x86_64-unknown-linux-gnu.tar.gz",
+    "version": "v0.13.0"
+  },
+  "bbl": {
+    "source": "github",
+    "url": "https://github.com/cloudfoundry/bosh-bootloader/releases/download/v8.4.0/bbl-v8.4.0_linux_x86-64",
+    "version": "v8.4.0"
+  },
+  "bbr": {
+    "source": "github",
+    "url": "https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases/download/v1.7.2/bbr-1.7.2-linux-amd64",
+    "version": "v1.7.2"
+  },
+  "bosh": {
+    "source": "github",
+    "url": "https://github.com/cloudfoundry/bosh-cli/releases/download/v6.2.1/bosh-cli-6.2.1-linux-amd64",
+    "version": "v6.2.1"
+  },
+  "build-service": {
+    "source": "pivnet",
+    "version": "0.0.4"
+  },
+  "cf": {
+    "source": "custom",
+    "url": "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=v6.50.0&source=github-rel",
+    "version": "v6.50.0"
+  },
+  "container-services-manager": {
+    "source": "pivnet",
+    "version": "0.7.92"
+  },
+  "credhub": {
+    "source": "github",
+    "url": "https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/2.7.0/credhub-linux-2.7.0.tgz",
+    "version": "2.7.0"
+  },
+  "direnv": {
+    "source": "github",
+    "url": "https://github.com/direnv/direnv/releases/download/v2.21.2/direnv.linux-amd64",
+    "version": "v2.21.2"
+  },
+  "docker-compose": {
+    "source": "github",
+    "url": "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-Linux-x86_64",
+    "version": "1.25.4"
+  },
+  "docker-machine": {
+    "source": "github",
+    "url": "https://github.com/docker/machine/releases/download/v0.16.2/docker-machine-Linux-x86_64",
+    "version": "v0.16.2"
+  },
+  "fly": {
+    "source": "github",
+    "url": "https://github.com/concourse/concourse/releases/download/v6.0.0/fly-6.0.0-linux-amd64.tgz",
+    "version": "v6.0.0"
+  },
+  "kubectl": {
+    "source": "custom",
+    "url": "https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl",
+    "version": "v1.18.0"
+  },
+  "om": {
+    "source": "github",
+    "url": "https://github.com/pivotal-cf/om/releases/download/4.6.0/om-linux-4.6.0.tar.gz",
+    "version": "4.6.0"
+  },
+  "p-event-alerts": {
+    "source": "pivnet",
+    "version": "1.2.10"
+  },
+  "p-scheduler": {
+    "source": "pivnet",
+    "version": "1.2.30"
+  },
+  "pack": {
+    "source": "github",
+    "url": "https://github.com/buildpacks/pack/releases/download/v0.9.0/pack-v0.9.0-linux.tgz",
+    "version": "v0.9.0"
+  },
+  "pcf-app-autoscaler": {
+    "source": "pivnet",
+    "version": "2.0.233"
+  },
+  "pivnet": {
+    "source": "github",
+    "url": "https://github.com/pivotal-cf/pivnet-cli/releases/download/v1.0.1/pivnet-linux-amd64-1.0.1",
+    "version": "v1.0.1"
+  },
+  "pivotal-container-service": {
+    "source": "pivnet",
+    "version": "1.6.1"
+  },
+  "pivotal-function-service": {
+    "source": "pivnet",
+    "version": "alpha v0.4.0"
+  },
+  "riff": {
+    "source": "github",
+    "url": "https://github.com/projectriff/cli/releases/download/v0.5.0/riff-linux-amd64.tgz",
+    "version": "v0.5.0"
+  },
+  "terraform": {
+    "source": "custom",
+    "url": "https://releases.hashicorp.com/terraform/0.11.14/terraform_0.11.14_linux_amd64.zip",
+    "version": "0.11.14"
+  },
+  "texplate": {
+    "source": "github",
+    "url": "https://github.com/pivotal-cf/texplate/releases/download/v0.3.0/texplate_linux_amd64",
+    "version": "v0.3.0"
+  },
+  "uaa": {
+    "source": "github",
+    "url": "https://github.com/cloudfoundry-incubator/uaa-cli/releases/download/0.10.0/uaa-linux-amd64-0.10.0",
+    "version": "0.10.0"
+  }
+}
