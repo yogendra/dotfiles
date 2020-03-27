@@ -27,9 +27,6 @@ TIMEZONE=${TIMEZONE:-Asia/Singapore}
 
 sudo ln -fs /usr/share/zoneinfo/$TIMEZONE /etc/localtime
 
-wget -q -O - https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key | sudo apt-key add -
-echo "deb https://packages.cloudfoundry.org/debian stable main" | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
-
 echo Install basic tools for the jumpbox
 OS_TOOLS=(\
     apt-transport-https \
