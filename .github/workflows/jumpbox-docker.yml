@@ -10,13 +10,14 @@ jobs:
         image: nginx
         ports:
           - 80:80
-        options: -v ${{ github.workspace }}:/usr/share/nginx/html:ro --name secrets-server --hostname secrets-server
+        options: --name secrets-server --hostname secrets-server
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v2
       - name: Prepare Secrets
         run: |
           echo "${{ secrets.SECRETS_SH }}" >> $GITHUB_WORKSPACE/config/secrets.sh
+          docker cp $GITHUB_WORKSPACE/config/secrets.sh secrets-server:/usr/share/nginx/html/secrets.sh
       - name: Build Docker Image
         run: |
           DOCKER_BUILD_NETWORK=$(docker network ls -f label=e87b52 --format "{{.Name}}" | head -1)            
