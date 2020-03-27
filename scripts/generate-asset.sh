@@ -92,7 +92,7 @@ version="0.11.14"
 add_asset "terraform" "custom" "$version" "https://releases.hashicorp.com/terraform/0.11.14/terraform_0.11.14_linux_amd64.zip"
 
 version=$(github_version cloudfoundry/cli)
-add_asset "cf" "custom" "$version" "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=$version&source=github-rel"
+add_asset "cf" "custom" "$version" "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=${version#v}&source=github-rel"
 
 version=$(_wget -O- https://storage.googleapis.com/kubernetes-release/release/stable.txt)
 add_asset "kubectl" "custom" "$version" "https://storage.googleapis.com/kubernetes-release/release/$version/bin/linux/amd64/kubectl"
