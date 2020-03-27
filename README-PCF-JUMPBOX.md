@@ -22,17 +22,15 @@ This gist has scripts to quickly setup a jumpbox.
 1. Create a file named `secrets.sh` in the project directory, with following content:
 
    ```bash
-   export PROJ_DIR=$HOME
    export PIVNET_LEGACY_TOKEN=<CHANGE_ME>
-   export GITHUB_OPTIONS="--http-user <CHANGE_ME> --http-password <CHANGE_ME>  --auth-no-challenge"
+   export GITHUB_TOKEN="<CHANGE_ME>"
    export GITHUB_REPO="<CHANGE_ME>"
    export TIMEZONE=<CHANGE_ME>
    ```
 
    - Replace `<CHANGE_ME>` with proper values.
-   - `PROJ_DIR` is the directory on the image where `bin/` folder will be created
    - `PIVNET_LEGACY_TOKEN` is token form [Pivnet Profile Page][pivnet-profile]. This is **required**
-   - `GITHUB_OPTIONS` are parametes used with `wget` for accessing github. This is requireed if you hit API limits.
+   - `GITHUB_TOKEB` is used for accessin github. This is useful if you hit API access limits.
    - `GITHUB_REPO` is the repository on github tha you want to use for init scripts
    - `TIMEZONE` is the timezone you want to set in the destination image
 
