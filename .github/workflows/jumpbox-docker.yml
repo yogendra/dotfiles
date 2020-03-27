@@ -21,7 +21,7 @@ jobs:
       - name: Build Docker Image
         run: |
           DOCKER_BUILD_NETWORK=$(docker network ls -f label=e87b52 --format "{{.Name}}" | head -1)            
-          docker build --network $DOCKER_BUILD_NETWORK -e GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} -t yogendra/pcf-jumpbox:latest -f yogendra_pcf-jumpbox.Dockerfile .
+          docker build --network $DOCKER_BUILD_NETWORK -t yogendra/pcf-jumpbox:latest -f yogendra_pcf-jumpbox.Dockerfile .
       - name: Test Docker Image
         run: |
           echo WIP
