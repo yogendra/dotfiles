@@ -19,32 +19,24 @@ This gist has scripts to quickly setup a jumpbox.
 
 ## Build Docker Image
 
-Create a file named `secrets.sh` in `config` directory, with following content:
-
-```bash
-export PROJ_DIR=$HOME
-export PIVNET_LEGACY_TOKEN=Xx721sd4_kYskjdk7D
-export GITHUB_OPTIONS="--http-user github_user --http-password asjhdkjsahd32423jkhkj4i32h432h4jkh2 --auth-no-challenge"
-export GITHUB_REPO="yogendra/dotfiles"
-export TIMEZONE=Asia/Singapore
-```
-
-Put correct token, username and password
-
-**NOTE**: `GITHUB_OPTIONS` is optional and should be used if you run into API limit restrictions.
-
-1. Create a file named `secrets.sh` in `config` directory, with following content:
+1. Create a file named `secrets.sh` in the project directory, with following content:
 
    ```bash
-   export OM_PIVNET_TOKEN=ASDSAD_DASDSAD
-   export GITHUB_OPTIONS="--http-user github_user --http-password asjhdkjsahd32423jkhkj4i32h432h4jkh2 --auth-no-challenge"
-   export GITHUB_REPO=yogendra/dotfiles
-
+   export PROJ_DIR=$HOME
+   export PIVNET_LEGACY_TOKEN=<CHANGE_ME>
+   export GITHUB_OPTIONS="--http-user <CHANGE_ME> --http-password <CHANGE_ME>  --auth-no-challenge"
+   export GITHUB_REPO="<CHANGE_ME>"
+   export TIMEZONE=<CHANGE_ME>
    ```
 
-   Put correct token, username and password
+   - Replace `<CHANGE_ME>` with proper values.
+   - `PROJ_DIR` is the directory on the image where `bin/` folder will be created
+   - `PIVNET_LEGACY_TOKEN` is token form [Pivnet Profile Page][pivnet-profile]. This is **required**
+   - `GITHUB_OPTIONS` are parametes used with `wget` for accessing github. This is requireed if you hit API limits.
+   - `GITHUB_REPO` is the repository on github tha you want to use for init scripts
+   - `TIMEZONE` is the timezone you want to set in the destination image
 
-   - `GITHUB_OPTIONS` is optional and should be used if you run into API limit restrictions.
+   **NOTE**: `GITHUB_OPTIONS` is optional and should be used if you run into API limit restrictions.
 
 1. Create a docker network
 
@@ -52,16 +44,16 @@ Put correct token, username and password
    docker network create buildnet
    ```
 
-1. Run a webserver to host secrets and. (Example: Host directory `/home/docker-user`)
+1. Run a webserver to host secrets
 
    ```bash
    docker run --name secrets-server --rm --volume /home/docker-user:/usr/share/nginx/html:ro --network buildnet -d nginx
    ```
 
-1. Copy `config/secrets.sh` to `secrets-server` container at `/usr/share/nginx/html`
+1. Copy `secrets.sh` to `secrets-server` container at `/usr/share/nginx/html`
 
    ```bash
-   docker cp config/secrets.sh secrets-server:/usr/share/nginx/html/secrets.sh
+   docker cp secrets.sh secrets-server:/usr/share/nginx/html/secrets.sh
    ```
 
 1. (**Optional**) test server by running another container as follows
@@ -73,7 +65,14 @@ Put correct token, username and password
 1. Run the build with following command
 
    ```bash
-   docker build --no-cache --network buildnet --tag yogendra/pcf-jumpbox:latest -f yogendra_pcf-tools.Dockerfile .
+   docker build --no-cache --network buildnet --tag yogendra/pcf-jumpbox:latest -f yogendra_pcf-jumpbox.Dockerfile .
+   ```
+
+1. Test your container
+
+   ```bash
+   docker run --rm -it yogendra/pcf-jumpbox:latest -- ls -l bin/
+
    ```
 
 1. Stop secrets webserver
@@ -81,3 +80,5 @@ Put correct token, username and password
    ```bash
    docker stop secrets-server
    ```
+
+[pivnet-profile]: https://network.pivotal.io/users/dashboard/edit-profile
