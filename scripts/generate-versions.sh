@@ -28,7 +28,7 @@ function github_version {
 
         version="$(wget ${GITHUB_OPTIONS} -qO- https://api.github.com/repos/$repo/releases  | jq -r '. | map(select (.prerelease == false))| .[0].tag_name' | sed 's/^v//')"
         [[ $version == "null" ]] && \
-            version="$(wget ${GITHUB_OPTIONS} -qO- https://api.github.com/repos/$repo/releases  | jq -r '.[0].tag_name' | sed 's/^v//')"
+            version="tags/$(wget ${GITHUB_OPTIONS} -qO- https://api.github.com/repos/$repo/releases  | jq -r '.[0].tag_name' )"
     fi
     add_version "$product" "$version"
 }
