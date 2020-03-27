@@ -11,6 +11,6 @@
   "pcf-app-autoscaler": "2.0.233",
   "pivotal-container-service": "1.6.1",
   "pivotal-function-service": "alpha v0.4.0",
-  "riff": "0.5.0",
+  "riff": "tags/v0.5.0",
   "terraform": "0.11.14"
 }
