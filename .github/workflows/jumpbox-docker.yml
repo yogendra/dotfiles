@@ -21,7 +21,7 @@ jobs:
       - name: Build Docker Image
         run: |
           DOCKER_BUILD_NETWORK=$(docker network ls -f label=e87b52 --format "{{.Name}}" | head -1)            
-          docker build --network $DOCKER_BUILD_NETWORK -t yogendra/pcf-tools:latest -f yogendra_pcf-tools.Dockerfile .
+          docker build --network $DOCKER_BUILD_NETWORK -t yogendra/pcf-jumpbox:latest -f yogendra_pcf-jumpbox.Dockerfile .
       - name: Test Docker Image
         run: |
           echo WIP
@@ -33,4 +33,4 @@ jobs:
           login-server: docker.io
       - name: Push Docker Image
         run: |
-          docker push yogendra/pcf-tools:latest
+          docker push yogendra/pcf-jumpbox:latest
