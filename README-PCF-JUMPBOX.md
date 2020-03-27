@@ -10,12 +10,12 @@ This gist has scripts to quickly setup a jumpbox.
 - Downloads tile/stemcell packages from pivnet
 - Build a jumpbox container image
 
-## Update versions
+## Update assets version/urls
 
-- Open `generate-version.sh`
-- Update line with calls to `add_version`
-- Run `./generate-versions.sh > versions.json`
+- Update `scripts/generate-asset.sh`
+- Run `scripts/generate-versions.sh > config/assets.json`
 - Commit changes and push repo
+- Turn on debugging by setting `_DEBUG` environment variable
 
 ## Build Docker Image
 
