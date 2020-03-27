@@ -79,4 +79,10 @@ This gist has scripts to quickly setup a jumpbox.
    docker stop secrets-server
    ```
 
+1. Remove `buildnet`
+
+   ```bash
+    docker network rm  buildnet
+   ```
+
 [pivnet-profile]: https://network.pivotal.io/users/dashboard/edit-profile
