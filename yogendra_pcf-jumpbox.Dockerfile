@@ -15,8 +15,11 @@ ENV PROJ_DIR=/home/pcf
 WORKDIR /home/pcf
 
 RUN set -e &&\
-    eval "$(wget -qO- $build_secret_location)" && \    
+    echo 0 && \
+    eval "$(wget -qO- $build_secret_location)" && \ 
+    echo 1 && \
     wget -qO- "https://raw.githubusercontent.com/$GITHUB_REPO/master/scripts/pcf-jumpbox-init.sh?$RANDOM" |  bash && \
+    echo 3 && \
     sudo rm -rf /var/lib/apt/lists/* 
 
 
