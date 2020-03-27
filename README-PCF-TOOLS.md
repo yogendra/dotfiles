@@ -22,10 +22,11 @@ This gist has scripts to quickly setup a jumpbox.
 Create a file named `secrets.sh` in `config` directory, with following content:
 
 ```bash
-export GIST_URL="https://gist.github.com/yogendra/318c09f0cd2548bdd07f592722c9bbec"
-export OM_PIVNET_TOKEN=ASDSAD_DASDSAD
+export PROJ_DIR=$HOME
+export PIVNET_LEGACY_TOKEN=Xx721sd4_kYskjdk7D
 export GITHUB_OPTIONS="--http-user github_user --http-password asjhdkjsahd32423jkhkj4i32h432h4jkh2 --auth-no-challenge"
-
+export GITHUB_REPO="yogendra/dotfiles"
+export TIMEZONE=Asia/Singapore
 ```
 
 Put correct token, username and password
