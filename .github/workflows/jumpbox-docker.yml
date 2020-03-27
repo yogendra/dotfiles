@@ -19,10 +19,8 @@ jobs:
           echo "${{ secrets.SECRETS_SH }}" >> $GITHUB_WORKSPACE/config/secrets.sh
       - name: Build Docker Image
         run: |
-          DOCKER_BUILD_NETWORK=$(docker network ls -f label=e87b52 --format "{{.Name}}" | head -1)  
-          echo dbn=$DOCKER_BUILD_NETWORK
-          docker run --network $DOCKER_BUILD_NETWORK --rm -t  yogendra/ubuntu curl -- http://secrets-server/Dockerfile
-          docker build --network $DOCKER_BUILD_NETWORK -t yogendra/pcf-tools:latest .
+          DOCKER_BUILD_NETWORK=$(docker network ls -f label=e87b52 --format "{{.Name}}" | head -1)            
+          docker build --network $DOCKER_BUILD_NETWORK -t yogendra/pcf-tools:latest -f yogendra_pcf-tools.Dockerfile .
       - name: Test Docker Image
         run: |
           echo WIP
