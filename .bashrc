@@ -43,20 +43,6 @@ function ipinfo {
 }
 
 
-# Get the weather
-function weather {
-    
-    if [ $# -eq 0 ]; then
-        LOC="$(ipinfo '' | jq .loc)"
-        clear
-        curl -s http://wttr.in/"$LOC"?FQ2
-    else
-        clear
-        curl -s http://wttr.in/"$1"?FQ2
-    fi
-}
-
-
 # Find out git branch for prompt
 function parse_git_branch {
 
@@ -98,5 +84,21 @@ function prompt {
 }
 
 prompt
-eval "$(direnv hook bash)"
+[[ command -v direnv ]] && eval "$(direnv hook bash)"
+
+if [[ command -v kubectl ]]; then
+    
+    alias k=kubectl
+    alias ksc="kubectl config use-context"
+    source <(k completion bash)
+    complete -F __start_kubectl k; 
+fi
+
+if [[ command -v docker ]]; then
+    alias d=docker            
+    alias drumit="docker run --rm -it"    
+fi
+
+
+
 export PATH=$PATH:$DOTFILES_DIR/scripts:$HOME/bin
