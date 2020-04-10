@@ -44,20 +44,16 @@ else
 fi
 
 echo Setting Direnv
-ln -fs $DOTFILES_DIR/.direnvrc ${HOME}/.direnvrc
+ln -fs $DOTFILES_DIR/root/.direnvrc ${HOME}/.direnvrc
 
 echo Setting Vim
-ln -fs ${DOTFILES_DIR}/.vimrc ${HOME}/.vimrc
+ln -fs ${DOTFILES_DIR}/root/.vimrc ${HOME}/.vimrc
 
 echo Setting TMUX
-ln -fs "${DOTFILES_DIR}/.tmux.conf" ${HOME}/.tmux.conf
+ln -fs "${DOTFILES_DIR}/root/.tmux.conf" ${HOME}/.tmux.conf
 
 echo Setting SSH
-[[ -d $HOME/.ssh ]] || mkdir -p $HOME/.ssh
-cat ${DOTFILES_DIR}/config/keys >> ${HOME}/.ssh/authorized_keys
-sort $HOME/.ssh/authorized_keys | uniq > $HOME/.ssh/authorized_keys
-ln -fs $DOTFILES_DIR/.ssh/config $HOME/.ssh/config
-ln -fs $DOTFILES_DIR/.ssh/configs $HOME/.ssh/configs
+ln -fs $DOTFILES_DIR/config/.ssh $HOME/.ssh
 
 echo Setting Bash shell
 ln -fs $DOTFILES_DIR/.bashrc $HOME/.bashrc
