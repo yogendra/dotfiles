@@ -4,7 +4,7 @@ echo Install brew
 
 echo Configure Taps
 
-echo Install brwe apps
+echo Install brew apps
 
 echo Install casks
 
