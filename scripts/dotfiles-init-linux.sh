@@ -53,10 +53,10 @@ echo Setting TMUX
 ln -fs "${DOTFILES_DIR}/root/.tmux.conf" ${HOME}/.tmux.conf
 
 echo Setting SSH
-ln -fs $DOTFILES_DIR/config/.ssh $HOME/.ssh
+ln -fs $DOTFILES_DIR/root/.ssh $HOME/.ssh
 
 echo Setting Bash shell
-ln -fs $DOTFILES_DIR/.bashrc $HOME/.bashrc
+ln -fs $DOTFILES_DIR/root/.bashrc $HOME/.bashrc
 
 echo Setting Git config
-ln -fs $DOTFILES_DIR/.gitconfig $HOME/.gitconfig 
+ln -fs $DOTFILES_DIR/root/.gitconfig $HOME/.gitconfig 
