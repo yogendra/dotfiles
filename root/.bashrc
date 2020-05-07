@@ -84,17 +84,16 @@ function prompt {
 }
 
 prompt
-[[ command -v direnv ]] && eval "$(direnv hook bash)"
+command -v direnv > /dev/null && eval "$(direnv hook bash)"
 
-if [[ command -v kubectl ]]; then
-    
+if  command -v kubectl > /dev/null; then
     alias k=kubectl
     alias ksc="kubectl config use-context"
     source <(k completion bash)
     complete -F __start_kubectl k; 
 fi
 
-if [[ command -v docker ]]; then
+if command -v docker > /dev/null; then
     alias d=docker            
     alias drumit="docker run --rm -it"    
 fi
