@@ -32,6 +32,7 @@ then
     git reset origin/master
     cd -
   fi
+  git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 else 
   # No git
   echo Download dotfile repo
@@ -41,6 +42,8 @@ else
   REPO_DIRNAME=$(ls -1d $DOTFILES_DIR/${REPO_SLUG}-* | head -1)
   (shopt -s dotglob nullglob; mv $REPO_DIRNAME/* $DOTFILES_DIR)
   rm -rf $REPO_DIRNAME
+  mkdir ~/.fzf
+  wget -qO- https://github.com//junegunn/fzf/tarball/master | tar xz -C ~/.fzf
 fi
 
 echo Setting Direnv
@@ -60,3 +63,5 @@ ln -fs $DOTFILES_DIR/root/.bashrc $HOME/.bashrc
 
 echo Setting Git config
 ln -fs $DOTFILES_DIR/root/.gitconfig $HOME/.gitconfig 
+
+~/.fzf/install --all
