@@ -1,0 +1,12 @@
+PRIVATE_DIR=$DOTFILE_DIR/private
+target=$1
+echo Sync: $PRIVATE_DIR ->  $target
+if [[ -d $target ]] && [[ -d $target/private ]]
+then
+  echo rsync -av $PRIVATE_DIR $target/private
+  return 0
+else
+  echo $target: skipped. It might be down
+  return 1
+fi
+

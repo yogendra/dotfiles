@@ -182,6 +182,8 @@ Plug 'mbbill/undotree'
 
 Plug 'parkr/vim-jekyll'
 
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+
 " Other plugins require curl
 if executable("curl")
 

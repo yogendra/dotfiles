@@ -1,0 +1,83 @@
+SCRIPT=$0
+function brew_update {
+  brew update
+  brew upgrade
+  brew cu --all --yes --cleanup --force
+  brew cleanup 
+  brew cask cleanup  
+}
+function npm_update {
+  activate npm
+  npm update -g
+}
+
+
+function mas_update {
+  mas upgrade
+}
+
+function gcloud_update {
+    activate gcloud
+    gcloud components update -q
+}
+
+function list_functions {
+    which $SCRIPT |grep _update\ | sed 's/_update.*//' | cat
+}
+
+function android_update {
+    activate android
+    sdkmanager --update --verbose
+}
+
+function metadata_update {
+    brew-metadata_update
+    mas-metadata_update
+}
+
+function brew-metadata_update {
+    echo Record Brew - Taps
+    brew tap | sort  > $DOTFILE_DIR/brew-taps
+    echo Record Brew - Apps
+    brew ls --full-name -1 | sort > $DOTFILE_DIR/brew-apps
+    echo Record Brew - Casks
+    brew cask ls -1 | sort  > $DOTFILE_DIR/brew-casks
+}
+function mas-metadata_update {
+    echo Record Mac App Store apps
+    mas list | awk {'print $1'} > $DOTFILE_DIR/mac-apps
+}
+function npm-metadata_update {
+    echo Record NPMs
+    profile config --remove-section node.modules
+    activate npm
+    npm list -g --depth=0 --parseable | grep node_modules | sed 's#.*node_modules/##' | while read module 
+    do 
+        profile config --add node.modules.module $module
+    done
+}
+function help {
+    fns="$(list_functions)"
+    cat <<HELP
+$SCRIPT <all|function>
+FUNCTIONS: 
+$fns
+HELP
+}
+
+FN=$1
+if [ -z "$FN" ] ; then 
+    echo "No function given"
+    help
+elif [  "$FN" = "-h" -o "$FN" = "--help"  -o "$FN" = "-?" ]; then
+    help
+elif [ "$FN" = "all" -o "$FN" = "All"  ] ; then
+    list_functions | while read a ; do
+        ${a}_update
+    done
+elif [[ $( list_functions | grep $FN | head -1) ]]; then    
+    ${FN}_update
+else
+    echo "$FN: function not found"
+    help
+fi

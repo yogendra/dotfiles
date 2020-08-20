@@ -1,0 +1,38 @@
+
+local envfile=$HOME/Library/LaunchAgents/environment.plist
+[[ -e $envfile ]] && (launchctl stop $envfile ;  launchctl unload $envfile)
+
+local launchctl_lines=""
+env | grep -v TOKEN| grep -E "(HOME=|ROOT=|^DOCKER|^PATH=|OPTS=)" | sed 's/=/ /' | while read var val; do 
+  launchctl_lines="${launchctl_lines}\nlaunchctl setenv $var '$val'"
+done
+
+read -d '' launchctl_pre <<"XML" 
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+<key>Label</key>
+<string>me.yogendra.env</string>
+<key>ProgramArguments</key>
+<array>
+  <string>sh</string>
+  <string>-c</string>
+  <string>
+
+XML
+read -d '' launchctl_post <<"XML" 
+  
+  </string>
+
+</array>
+<key>RunAtLoad</key>
+<true/>
+</dict>
+</plist>
+XML
+echo $launchctl_pre $launchctl_lines $launchctl_post  > $envfile
+launchctl load $envfile
+launchctl start $envfile
+
+

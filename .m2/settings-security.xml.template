@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<!-- 
+
+    Get more information from https://maven.apache.org/guides/mini/guide-encryption.html
+
+-->
+<settingsSecurity>
+    <master>MASTER PASSWORD HERE</master>
+</settingsSecurity>

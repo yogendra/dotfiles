@@ -1,0 +1,4 @@
+echo $PATH| tr : '\n' | grep -e '^[[:space:]]*$'  -v >/tmp/paths
+TS=$(date  '+%Y%m%d%H%M%S')
+sudo cp /etc/paths /etc/paths.$TS
+sudo cp /tmp/paths /etc/paths

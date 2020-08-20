@@ -1,0 +1,10 @@
+*~
+.DS_Store
+.hg
+CVS
+.svn
+.gradletasknamecache
+rebel.xml
+.m2/repository
+.m2/wrapper
+.m2/settings-security.xml

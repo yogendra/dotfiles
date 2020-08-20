@@ -1,0 +1,15 @@
+buildpack/tap
+buo/cask-upgrade
+cloudfoundry/tap
+homebrew/cask
+homebrew/cask-fonts
+homebrew/cask-versions
+homebrew/core
+homebrew/services
+isen-ng/dotnet-sdk-versions
+jenkins-x/jx
+k14s/tap
+pivotal-cf/om
+pivotal/tap
+starkandwayne/cf
+weaveworks/tap

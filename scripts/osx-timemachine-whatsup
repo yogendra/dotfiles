@@ -1,0 +1,1 @@
+sudo opensnoop -n backupd | grep -v 'Time Machine Backups'

@@ -1,0 +1,10 @@
+#!/bin/sh
+if [[ $(uname) == "Darwin" ]]
+then
+    /Applications/p4merge.app/Contents/MacOS/p4merge $*
+elif [[ $(uname) == "Linux" ]];
+then 
+    p4merge $*
+fi
+
+

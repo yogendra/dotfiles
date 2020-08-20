@@ -1,0 +1,12 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+  "files.associations": {
+    ".aliases": "shellscript",
+    ".exports": "shellscript",
+    ".zshrc": "shellscript",
+    "*.zsh": "shellscript",
+    "**/zsh-functions/**": "shellscript",
+    ".zsh-init": "shellscript"
+  },
+  "editor.wordWrap": "off"
+}
