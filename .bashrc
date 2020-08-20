@@ -21,3 +21,4 @@ if  command -v kubectl > /dev/null; then
     complete -F __start_kubectl k; 
 fi
 
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
