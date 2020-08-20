@@ -2,10 +2,10 @@ FROM ubuntu
 
 RUN apt-get update &&\
     apt-get install -qqy curl sudo && \
-    addgroup admin && \
-    adduser --shell /bin/bash --uid 1001  --disabled-login  --gecos "" ubuntu && \
-    adduser ubuntu admin
+    adduser --shell /bin/bash --uid 1000  --disabled-login  --gecos "" ubuntu && \    
+    echo "ubuntu ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/0-ubuntu
 
-USER 1001
+
+USER 1000
 WORKDIR /home/ubuntu
 
