@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+SCRIPT_DIR=$( cd `dirname $0`; pwd)
+PROJ_DIR=$(cd $SCRIPT_DIR/..; pwd)
+
+docker build  -t yogendra/dotfiles-linux-test:latest -f $SCRIPT_DIR/test-dotfiles-linux.Dockerfile $SCRIPT_DIR
+
+
+docker run --rm -it yogendra/dotfiles-linux-test:latest
+
