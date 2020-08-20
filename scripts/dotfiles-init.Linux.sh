@@ -6,9 +6,9 @@ mkdir -p $HOME/bin
 
 sudo apt-get update 
 sudo apt-get install -qqy git wget direnv 
-[[  -d $HOME/.dotfiles.git ]] ||  git clone --bare --git-dir $HOME/.dotfiles.git  https://github.com/${GIT_REPO}.git 
+[[  -d $HOME/.dotfiles.git ]] ||  git clone --bare --branch master --depth=1 --no-tags  https://github.com/${GIT_REPO}.git $HOME/.dotfiles.git
 
-/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME checkout
+git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME checkout --force
 
 curl -fsSL https://starship.rs/install.sh | bash -s -- -b $HOME/bin  -y
 
