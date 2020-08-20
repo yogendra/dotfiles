@@ -17,7 +17,7 @@ command -v direnv > /dev/null && eval "$(direnv hook bash)"
 command -v starship > /dev/null && eval "$(starship init bash)"
 
 if  command -v kubectl > /dev/null; then
-    source <(k completion bash)
+    source <(kubectl completion bash)
     complete -F __start_kubectl k; 
 fi
 
