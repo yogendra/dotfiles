@@ -1,5 +1,4 @@
-FROM ubuntu as stage-1
-
+FROM ubuntu as base
 RUN apt-get update &&\
     apt-get install -qqy curl sudo && \
     adduser --shell /bin/bash --uid 1000  --disabled-login  --gecos "" ubuntu && \    
@@ -8,9 +7,11 @@ RUN apt-get update &&\
 
 USER 1000
 WORKDIR /home/ubuntu
+
+FROM base as stage-1
 VOLUME /home/ubuntu/.dotfiles.git
+VOLUME /home/ubuntu/dotfiles-init.Linux.sh
 
+FROM stage-1 as base
 
-FROM stage-1 as stage-2
-
-RUN curl -sSL https://raw.githubusercontent.com/yogendra/dotfiles/master/scripts/dotfiles-init.Linux.sh  | bash
+RUN curl -sSL https://raw.githubusercontent.com/yogendra/dotfiles/master/scripts/dotfiles-init.Linux.sh?$RANDOM  | bash
