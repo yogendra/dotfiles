@@ -10,7 +10,7 @@ FROM base as stage-1
 VOLUME /home/ubuntu/.dotfiles.git
 VOLUME /home/ubuntu/dotfiles-init.Linux.sh
 
-FROM base
+FROM base as stage-2
 
 
 FROM base as stage-3
