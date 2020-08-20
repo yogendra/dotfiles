@@ -3,7 +3,7 @@
 
 sudo apt-get update 
 sudo apt-get install -qqy git wget direnv 
-git clone --bare --git-dir $HOME/.dotfiles.git  https://github.com/${GIT_REPO}.git 
+[[  -d $HOME/.dotfiles.git ]] ||  git clone --bare --git-dir $HOME/.dotfiles.git  https://github.com/${GIT_REPO}.git 
 
 /usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME checkout
 
