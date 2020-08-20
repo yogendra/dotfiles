@@ -12,6 +12,6 @@ FROM base as stage-1
 VOLUME /home/ubuntu/.dotfiles.git
 VOLUME /home/ubuntu/dotfiles-init.Linux.sh
 
-FROM stage-1 as base
+FROM stage-2 as base
 
 RUN curl -sSL https://raw.githubusercontent.com/yogendra/dotfiles/master/scripts/dotfiles-init.Linux.sh?$RANDOM  | bash
