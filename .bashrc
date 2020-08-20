@@ -9,7 +9,7 @@ export EDITOR="vim"
 export GOPATH=$HOME/code/go
 export PATH=$HOME/bin:$HOME/scripts:$GOPATH/bin:/usr/local/bin:/usr/bin:/bin:/sbin:/usr/sbin:/usr/local/sbin:~/.local/bin:/usr/local/go/bin
 
-
+source $HOME/.aliases
 # Set vi as line editor
 set -o emacs
 
