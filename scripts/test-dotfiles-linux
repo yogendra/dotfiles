@@ -7,5 +7,5 @@ PROJ_DIR=$(cd $SCRIPT_DIR/..; pwd)
 docker build  -t yogendra/dotfiles-linux-test:latest -f $SCRIPT_DIR/test-dotfiles-linux.Dockerfile $SCRIPT_DIR
 
 
-docker run --rm -it yogendra/dotfiles-linux-test:latest
+docker run --rm -it --name dotfiles-linux-test --hostname dotfile-linux-test yogendra/dotfiles-linux-test:latest
 
