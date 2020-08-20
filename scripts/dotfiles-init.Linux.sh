@@ -9,6 +9,7 @@ sudo apt-get install -qqy git wget direnv
 [[  -d $HOME/.dotfiles.git ]] ||  git clone --bare --branch master --depth=1 --no-tags  https://github.com/${GIT_REPO}.git $HOME/.dotfiles.git
 
 git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME checkout --force
+git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME config --local status.showUntrackedFiles no
 
 curl -fsSL https://starship.rs/install.sh | bash -s -- -b $HOME/bin  -y
 
