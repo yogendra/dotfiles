@@ -22,7 +22,7 @@ if  command -v kubectl > /dev/null; then
 fi
 
 command -v starship > /dev/null eval "$(starship init zsh)"
-
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 source $DOTFILE_DIR/.aliases
 
