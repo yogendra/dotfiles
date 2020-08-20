@@ -8,4 +8,5 @@ RUN apt-get update &&\
 
 USER 1000
 WORKDIR /home/ubuntu
+VOLUME /home/ubuntu/.dotfiles.git
 
