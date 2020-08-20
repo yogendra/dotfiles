@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+
+GIT_REPO=${GIT_REPO:-yogendra/dotfiles}
 mkdir -p $HOME/bin
 sudo apt-get update 
 sudo apt-get install -qqy git wget direnv 
