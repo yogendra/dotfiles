@@ -21,7 +21,7 @@ if  command -v kubectl > /dev/null; then
     complete -F __start_kubectl k; 
 fi
 
-eval "$(starship init zsh)"
+command -v starship > /dev/null eval "$(starship init zsh)"
 
 
 source $DOTFILE_DIR/.aliases
