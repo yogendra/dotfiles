@@ -7,12 +7,10 @@ sudo apt-get install -qqy git wget direnv
 
 /usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME checkout
 
-curl -fsSL https://starship.rs/install.sh -o /tmp/starship-install.sh
-bash /tmp/starship-install.sh -b $HOME/bin  -y
-rm /tmp/starship-install.sh
+curl -fsSL https://starship.rs/install.sh | bash -s -b $HOME/bin  -y
 
-git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-~/.fzf/install
+git clone --depth 1 https://github.com/junegunn/fzf.git $HOME/.fzf
+$HOME/.fzf/install --all --key-bindings --completion --no-update-rc --64
 
 /usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME checkout
 
