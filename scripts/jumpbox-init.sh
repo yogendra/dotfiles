@@ -116,8 +116,6 @@ function setup_k8s (){
 	)
 
 	export PATH="${PROJECT_HOME}/bin:${PATH}:${HOME}/.krew/bin"
-	echo export PATH="\${PROJ_DIR}/bin:\${PATH}:\${HOME}/.krew/bin" >> ~/.bashrc
-	echo 'eval "$(direnv hook bash)"' >> ~/.bashrc
 	kubectl krew install ctx
 	kubectl krew install ns
 	kubectl krew install tail
@@ -138,10 +136,10 @@ function setup_k8s (){
 
 	curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-linux-amd64
 	chmod +x ./kind
-	mv ./kind ${PROJ_DIR}/bin/kind
+	mv ./kind ${PROJECT_HOME}/bin/kind
 
-    curl -sSL https://github.com/derailed/k9s/releases/download/v0.21.7/k9s_Linux_x86_64.tar.gz | tar -C ${PROJ_DIR}/bin -xz k9s
-    curl -sSL  https://github.com/wagoodman/dive/releases/download/v0.9.2/dive_0.9.2_linux_amd64.tar.gz | tar -C ${PROJ_DIR}/bin -xz dive
+    curl -sSL https://github.com/derailed/k9s/releases/download/v0.21.7/k9s_Linux_x86_64.tar.gz | tar -C ${PROJECT_HOME}/bin -xz k9s
+    curl -sSL  https://github.com/wagoodman/dive/releases/download/v0.9.2/dive_0.9.2_linux_amd64.tar.gz | tar -C ${PROJECT_HOME}/bin -xz dive
 }
 
 
@@ -150,7 +148,7 @@ function cloud_common (){
 	wget -q https://releases.hashicorp.com/terraform/0.11.14/terraform_0.11.14_linux_amd64.zip -O /tmp/terraform.zip
 	gunzip -S .zip /tmp/terraform.zip
 	mv /tmp/terraform ${PROJ_DIR}/bin/terraform
-	chmod a+x ${PROJ_DIR}/bin/terraform
+	chmod a+x ${PROJECT_HOME}/bin/terraform
 }
 
 function setup_aws (){
@@ -172,44 +170,44 @@ function setup_tkgi(){
 
     # Bosh
     URL=https://github.com/cloudfoundry/bosh-cli/releases/download/v6.3.1/bosh-cli-6.3.1-linux-amd64
-    wget -q ${URL} -O ${PROJ_DIR}/bin/bosh
-    chmod a+x ${PROJ_DIR}/bin/bosh
+    wget -q ${URL} -O ${PROJECT_HOME}/bin/bosh
+    chmod a+x ${PROJECT_HOME}/bin/bosh
 
     # BBR
     URL=https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases/download/v1.7.2/bbr-1.7.2-linux-amd64
-    wget -q ${URL} -O ${PROJ_DIR}/bin/bbr
-    chmod a+x ${PROJ_DIR}/bin/bbr
+    wget -q ${URL} -O ${PROJECT_HOME}/bin/bbr
+    chmod a+x ${PROJECT_HOME}/bin/bbr
 
     # Credhub
     URL=https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/2.8.0/credhub-linux-2.8.0.tgz
-    wget -q ${URL} -O- | tar -C ${PROJ_DIR}/bin -xz  ./credhub
-    chmod a+x ${PROJ_DIR}/bin/credhub
+    wget -q ${URL} -O- | tar -C ${PROJECT_HOME}/bin -xz  ./credhub
+    chmod a+x ${PROJECT_HOME}/bin/credhub
 
     # Fly
     URL=https://github.com/concourse/concourse/releases/download/v6.3.1/fly-6.3.1-linux-amd64.tgz
-    wget -q ${URL} -O- | tar -C ${PROJ_DIR}/bin -zx fly
-    chmod a+x ${PROJ_DIR}/bin/fly
+    wget -q ${URL} -O- | tar -C ${PROJECT_HOME}/bin -zx fly
+    chmod a+x ${PROJECT_HOME}/bin/fly
     
     # OM
     URL=https://github.com/pivotal-cf/om/releases/download/6.1.2/om-linux-6.1.2.tar.gz
-    wget -q ${URL} -O- | tar -C ${PROJ_DIR}/bin -zx om
-    chmod a+x ${PROJ_DIR}/bin/om
+    wget -q ${URL} -O- | tar -C ${PROJECT_HOME}/bin -zx om
+    chmod a+x ${PROJECT_HOME}/bin/om
 
     # PIVNET
     URL=https://github.com/pivotal-cf/pivnet-cli/releases/download/v1.0.4/pivnet-linux-amd64-1.0.4
     wget -q ${URL} -O ${PROJ_DIR}/bin/pivnet
-    chmod a+x ${PROJ_DIR}/bin/pivnet
+    chmod a+x ${PROJECT_HOME}/bin/pivnet
     
     # UAA
     URL=https://github.com/cloudfoundry-incubator/uaa-cli/releases/download/0.10.0/uaa-linux-amd64-0.10.0
-    wget -q ${URL} -O ${PROJ_DIR}/bin/uaa
-    chmod a+x ${PROJ_DIR}/bin/uaa
+    wget -q ${URL} -O ${PROJECT_HOME}/bin/uaa
+    chmod a+x ${PROJECT_HOME}/bin/uaa
     
     #PKS
     VERSION=1.8.1
     om download-product -t "${PIVNET_LEGACY_TOKEN}" -o /tmp -v "${VERSION}"  -p pivotal-container-service --pivnet-file-glob='pks-linux-amd64-*'
-    mv /tmp/pks-linux-amd64-* ${PROJ_DIR}/bin/pks
-    chmod a+x ${PROJ_DIR}/bin/pks
+    mv /tmp/pks-linux-amd64-* ${PROJECT_HOME}/bin/pks
+    chmod a+x ${PROJECT_HOME}/bin/pks
 }
 
 function setup_vsphere (){
@@ -223,6 +221,7 @@ function setup_gcp(){
     # GCP SDK
     echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+    sudo apt-get update && sudo apt-get install google-cloud-sdk
 }
 
 function setup_azure(){
@@ -233,12 +232,14 @@ function setup_azure(){
     [[ -f /etc/apt/sources.list.d/azure-cli.list ]] || 
         echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | 
         sudo tee /etc/apt/sources.list.d/azure-cli.list
+    sudo apt-get update
+    sudo apt-get install azure-cli
 }
 
 function setup_tanzu(){
 	echo == Tanzu = TMC
-	curl -sSL https://vmware.bintray.com/tmc/0.1.0-d11404fb/linux/x64/tmc -o $PROJECT_HOME/bin/tmc
-	chmod a+x $PROJECT_HOME/bin/tmc
+	curl -sSL https://vmware.bintray.com/tmc/0.1.0-d11404fb/linux/x64/tmc -o ${PROJECT_HOME}/bin/tmc
+	chmod a+x ${PROJECT_HOME}/bin/tmc
 }
 
 for comp in $*
