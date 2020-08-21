@@ -195,8 +195,7 @@ function setup_tkgi(){
 
     # PIVNET
     URL=https://github.com/pivotal-cf/pivnet-cli/releases/download/v1.0.4/pivnet-linux-amd64-1.0.4
-    wget -q ${URL} -O ${sudo apt-get update
-sudo apt-get install azure-cli}/bin/pivnet
+    wget -q ${URL} -O ${PROJECT_HOME}/bin/pivnet
     chmod a+x ${PROJECT_HOME}/bin/pivnet
     
     # UAA
@@ -204,11 +203,15 @@ sudo apt-get install azure-cli}/bin/pivnet
     wget -q ${URL} -O ${PROJECT_HOME}/bin/uaa
     chmod a+x ${PROJECT_HOME}/bin/uaa
     
-    #PKS
-    VERSION=1.8.1
-    om download-product -t "${PIVNET_LEGACY_TOKEN}" -o /tmp -v "${VERSION}"  -p pivotal-container-service --pivnet-file-glob='pks-linux-amd64-*'
-    mv /tmp/pks-linux-amd64-* ${PROJECT_HOME}/bin/pks
-    chmod a+x ${PROJECT_HOME}/bin/pks
+    
+    if [[ -n ${PIVNET_LEGACY_TOKEN} ]] 
+    then 
+        #PKS
+        VERSION=1.8.1
+        om download-product -t "${PIVNET_LEGACY_TOKEN}" -o /tmp -v "${VERSION}"  -p pivotal-container-service --pivnet-file-glob='pks-linux-amd64-*'
+        mv /tmp/pks-linux-amd64-* ${PROJECT_HOME}/bin/pks
+        chmod a+x ${PROJECT_HOME}/bin/pks
+    fi
 }
 
 function setup_vsphere (){
