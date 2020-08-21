@@ -217,7 +217,7 @@ function setup_tkgi(){
 function setup_vsphere (){
 	
 	echo == Vsphere
-	wget -q https://github.com/vmware/govmomi/releases/download/v0.23.0/govc_linux_amd64.gz | gunzip -O- > ${PROJECT_HOME}/bin/govc
+	wget -q https://github.com/vmware/govmomi/releases/download/v0.23.0/govc_linux_amd64.gz -O- | gunzip  > ${PROJECT_HOME}/bin/govc
 	chmod a+x ${PROJECT_HOME}/bin/govc
 }
 
@@ -227,7 +227,7 @@ function setup_gcp(){
         echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
     sudo apt-get update
-    sudo apt-get install google-cloud-sdk
+    sudo apt-get install -qqy google-cloud-sdk
 }
 
 function setup_azure(){
@@ -239,7 +239,7 @@ function setup_azure(){
         echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | 
         sudo tee /etc/apt/sources.list.d/azure-cli.list
     sudo apt-get update
-    sudo apt-get install azure-cli
+    sudo apt-get install -qqy azure-cli
 }
 
 function setup_tanzu(){
