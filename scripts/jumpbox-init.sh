@@ -124,7 +124,7 @@ function setup_k8s (){
 	kubectl krew install access-matix
 
 
-	usermod -aG docker $USER
+	sudo usermod -aG docker $USER
 
 
 	helm repo add elastic https://helm.elastic.co
