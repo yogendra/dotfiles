@@ -59,9 +59,6 @@ function setup_common(){
 	sudo apt-get install -y "${OS_TOOLS[@]}"
 	sudo curl  -sSL https://bootstrap.pypa.io/get-pip.py | python2.7
 
-	git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-	~/.fzf/install --64 --all --completion --update-rc --key-bindings
-    
 	wget -q  https://github.com/sharkdp/bat/releases/download/v0.15.4/bat-v0.15.4-x86_64-unknown-linux-gnu.tar.gz -O- | tar -C /tmp -xz bat-v0.15.4-x86_64-unknown-linux-gnu/bat
 	mv /tmp/bat-v0.15.4-x86_64-unknown-linux-gnu/bat ${PROJECT_HOME}/bin/bat
 	chmod a+x  ${PROJECT_HOME}/bin/bat
