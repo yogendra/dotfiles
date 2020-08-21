@@ -119,7 +119,7 @@ function setup_k8s (){
 	kubectl krew install ctx
 	kubectl krew install ns
 	kubectl krew install tail
-	kubectl krew install access-matix
+	kubectl krew install access-matrix
 
 
 	sudo usermod -aG docker $USER
