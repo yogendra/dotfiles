@@ -100,8 +100,8 @@ function setup_k8s (){
 	  helm 
 	
 
-	# K14s kapp, ytt, kbld
-	curl -L https://k14s.io/install.sh | bash
+	# K14s kapp, ytt, kbld 
+	curl -L https://k14s.io/install.sh | K14SIO_INSTALL_BIN_DIR=${PROJ_DIR}/bin bash
 
 
 
