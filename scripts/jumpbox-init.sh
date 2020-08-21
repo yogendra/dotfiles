@@ -138,7 +138,7 @@ function setup_k8s (){
 
 	curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-linux-amd64
 	chmod +x ./kind
-	mv ./kind $PROJ_DIR/bin/kind
+	mv ./kind ${PROJ_DIR}/bin/kind
 
     curl -sSL https://github.com/derailed/k9s/releases/download/v0.21.7/k9s_Linux_x86_64.tar.gz | tar -C ${PROJ_DIR}/bin -xz k9s
     curl -sSL  https://github.com/wagoodman/dive/releases/download/v0.9.2/dive_0.9.2_linux_amd64.tar.gz | tar -C ${PROJ_DIR}/bin -xz dive
