@@ -63,8 +63,8 @@ function setup_common(){
 	~/.fzf/install --64 --all --completion --update-rc --key-bindings
     
 	wget -q  https://github.com/sharkdp/bat/releases/download/v0.15.4/bat-v0.15.4-x86_64-unknown-linux-gnu.tar.gz -O- | tar -C /tmp -xz bat-v0.15.4-x86_64-unknown-linux-gnu/bat
-	mv /tmp/bat-v0.15.4-x86_64-unknown-linux-gnu/bat ${PROJ_DIR}/bin/bat
-	chmod a+x  ${PROJ_DIR}/bin/bat
+	mv /tmp/bat-v0.15.4-x86_64-unknown-linux-gnu/bat ${PROJECT_HOME}/bin/bat
+	chmod a+x  ${PROJECT_HOME}/bin/bat
 	rm -rf /tmp/bat-v0.13.0-x86_64-unknown-linux-gnu
 }
 
@@ -101,7 +101,7 @@ function setup_k8s (){
 	
 
 	# K14s kapp, ytt, kbld 
-	curl -L https://k14s.io/install.sh | K14SIO_INSTALL_BIN_DIR=${PROJ_DIR}/bin bash
+	curl -L https://k14s.io/install.sh | K14SIO_INSTALL_BIN_DIR=${PROJECT_HOME}/bin bash
 
 
 
@@ -147,7 +147,7 @@ function cloud_common (){
 	echo == Cloud Common
 	wget -q https://releases.hashicorp.com/terraform/0.11.14/terraform_0.11.14_linux_amd64.zip -O /tmp/terraform.zip
 	gunzip -S .zip /tmp/terraform.zip
-	mv /tmp/terraform ${PROJ_DIR}/bin/terraform
+	mv /tmp/terraform ${PROJECT_HOME}/bin/terraform
 	chmod a+x ${PROJECT_HOME}/bin/terraform
 }
 
@@ -195,7 +195,8 @@ function setup_tkgi(){
 
     # PIVNET
     URL=https://github.com/pivotal-cf/pivnet-cli/releases/download/v1.0.4/pivnet-linux-amd64-1.0.4
-    wget -q ${URL} -O ${PROJ_DIR}/bin/pivnet
+    wget -q ${URL} -O ${sudo apt-get update
+sudo apt-get install azure-cli}/bin/pivnet
     chmod a+x ${PROJECT_HOME}/bin/pivnet
     
     # UAA
@@ -213,15 +214,17 @@ function setup_tkgi(){
 function setup_vsphere (){
 	
 	echo == Vsphere
-	wget -q https://github.com/vmware/govmomi/releases/download/v0.23.0/govc_linux_amd64.gz | gunzip -O- > ${PROJ_DIR}/bin/govc
-	chmod a+x $PROJ_DIR/bin/govc
+	wget -q https://github.com/vmware/govmomi/releases/download/v0.23.0/govc_linux_amd64.gz | gunzip -O- > ${PROJECT_HOME}/bin/govc
+	chmod a+x ${PROJECT_HOME}/bin/govc
 }
 
 function setup_gcp(){
     # GCP SDK
-    echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+    [[ -f /etc/apt/sources.list.d/google-cloud-sdk.list ]] || 
+        echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
-    sudo apt-get update && sudo apt-get install google-cloud-sdk
+    sudo apt-get update
+    sudo apt-get install google-cloud-sdk
 }
 
 function setup_azure(){
@@ -237,7 +240,7 @@ function setup_azure(){
 }
 
 function setup_tanzu(){
-	echo == Tanzu = TMC
+	echo == Tanzu 
 	curl -sSL https://vmware.bintray.com/tmc/0.1.0-d11404fb/linux/x64/tmc -o ${PROJECT_HOME}/bin/tmc
 	chmod a+x ${PROJECT_HOME}/bin/tmc
 }
