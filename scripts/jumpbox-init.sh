@@ -63,6 +63,11 @@ function setup_common(){
 	mv /tmp/bat-v0.15.4-x86_64-unknown-linux-gnu/bat ${PROJECT_HOME}/bin/bat
 	chmod a+x  ${PROJECT_HOME}/bin/bat
 	rm -rf /tmp/bat-v0.13.0-x86_64-unknown-linux-gnu
+
+    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys CC86BB64
+    sudo add-apt-repository ppa:rmescandon/yq
+    sudo apt update
+    sudo apt install yq -y
 }
 
 function setup_profile (){
