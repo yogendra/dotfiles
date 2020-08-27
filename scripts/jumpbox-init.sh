@@ -51,8 +51,7 @@ function setup_common(){
 		vim \
 		wamerican \
 		wget \
-		whois \
-		nginx     
+		whois   
 		)
 	sudo apt-get update
 	sudo apt-get upgrade -y
