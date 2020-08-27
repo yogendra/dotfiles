@@ -68,6 +68,9 @@ function setup_common(){
     sudo add-apt-repository ppa:rmescandon/yq
     sudo apt update
     sudo apt install yq -y
+
+    curl -sSL https://github.com/go-acme/lego/releases/download/v3.8.0/lego_v3.8.0_linux_amd64.tar.gz | tar -C ${PROJECT_HOME}/bin xzv lego 
+    chmod a+x ${PROJECT_HOME}/bin/lego
 }
 
 function setup_profile (){
