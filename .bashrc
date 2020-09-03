@@ -22,3 +22,7 @@ if  command -v kubectl > /dev/null; then
 fi
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+
+[[ -f $HOME/.local/bin/gpg-agent-relay ]] && $HOME/.local/bin/gpg-agent-relay start
+export SSH_AUTH_SOCK=$HOME/.gnupg/S.gpg-agent.ssh
