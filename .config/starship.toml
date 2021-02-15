@@ -14,7 +14,7 @@ format = """\
     $crystal\
     $cmd_duration\
     $jobs\
-    $battery\    
+    $battery\
     $docker_context\
     $kubernetes\
     $aws\
