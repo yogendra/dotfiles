@@ -1,71 +1,59 @@
 # Don't print a new line at the start of the prompt
-add_newline = true
+add_newline = false
+format = """\
+    $username\
+    $hostname\
+    $time\
+    $package\
+    $golang\
+    $java\
+    $nodejs\
+    $python\
+    $terraform\
+    $conda\
+    $crystal\
+    $cmd_duration\
+    $jobs\
+    $battery\    
+    $docker_context\
+    $kubernetes\
+    $aws\
+    $line_break\
+    $exec_code\
+    $cmd_duration\
+    $vi_mode\
+    $directory\
+    $git_branch\
+    $git_commit\
+    $git_state\
+    $git_status\
+    $character\
+"""
 
-# Replace the "❯" symbol in the prompt with "➜"
+
+
 [character]      # The name of the module we are configuring is "character"
-symbol = "➜"     # The "symbol" segment is being set to "➜"
+symbol = "➜ "     # The "symbol" segment is being set to "➜"
 
-# Disable the package module, hiding it from the prompt completely
-[package]
-disabled = true
+[directory]
+truncation_length = 8
+
+
 
 [kubernetes]
+symbol = "☸:"
 disabled = false
+
+
 
 [docker_context]
 disabled = false
 
-# [kubernetes.context_aliases]
-# "dev.local.cluster.k8s" = "dev"
 
-
-prompt_order = [
-    # "time",
-    "username",
-    "hostname",
-    "directory",
-    "git_branch",
-    "git_commit",
-    "git_state",
-    "git_status",
-    # "hg_branch",
-    "package",
-    # "dotnet",
-    # "elixir",
-    # "elm",
-    # "erlang",
-    "golang",
-    "java",
-    # "julia",
-    # "nim",
-    "nodejs",
-    # "ocaml",
-    # "php",
-    # "purescript",
-    "python",
-    # "ruby",
-    # "rust",
-    "terraform",
-    "zig",
-    # "nix_shell",
-    "conda",
-    "memory_usage",
-    "kubernetes",
-    "docker_context",
-    "aws",
-    "env_var",
-    "crystal",
-    "cmd_duration",
-    # "custom",
-    "line_break",
-    "jobs",
-    "battery",    
-    "character",
-]
-
-[battery]
+[time]
 disabled = false
+# format = "[ %T ]"
 
-# [time]
-# disabled = false
-# format = "🕙  [ %T ]"
+
+[username]
+show_always = true
