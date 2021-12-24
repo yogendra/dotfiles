@@ -51,7 +51,7 @@ function setup_common(){
 		vim \
 		wamerican \
 		wget \
-		whois   
+		whois
 		)
 	sudo apt-get update
 	sudo apt-get upgrade -y
@@ -68,28 +68,28 @@ function setup_common(){
     sudo apt update
     sudo apt install yq -y
 
-    curl -sSL https://github.com/go-acme/lego/releases/download/v3.8.0/lego_v3.8.0_linux_amd64.tar.gz | tar -C ${PROJECT_HOME}/bin -xzv lego 
+    curl -sSL https://github.com/go-acme/lego/releases/download/v3.8.0/lego_v3.8.0_linux_amd64.tar.gz | tar -C ${PROJECT_HOME}/bin -xzv lego
     chmod a+x ${PROJECT_HOME}/bin/lego
 }
 
 function setup_profile (){
     echo == Profile
-	curl -L https://raw.githubusercontent.com/yogendra/dotfiles/master/scripts/dotfiles-init.Linux.sh  | bash	
+	curl -L https://raw.githubusercontent.com/yogendra/dotfiles/master/scripts/dotfiles-init.Linux.sh  | bash
 }
 
 
 function setup_k8s (){
     echo == K8s
-	[[ -f /etc/apt/sources.list.d/kubernetes.list ]] || 
+	[[ -f /etc/apt/sources.list.d/kubernetes.list ]] ||
         echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
 	curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 
 
-	[[ -f /etc/apt/sources.list.d/docker.list ]] || 
+	[[ -f /etc/apt/sources.list.d/docker.list ]] ||
         echo  "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee -a /etc/apt/sources.list.d/docker.list
 	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
-	[[ -f /etc/apt/sources.list.d/helm-stable-debian.list ]] || 
+	[[ -f /etc/apt/sources.list.d/helm-stable-debian.list ]] ||
         echo "deb https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
 	curl https://baltocdn.com/helm/signing.asc | sudo apt-key add -a
 
@@ -101,30 +101,24 @@ function setup_k8s (){
       containerd.io \
       docker-compose \
 	  kubectl \
-	  helm 
-	
+	  helm
 
-	# K14s kapp, ytt, kbld 
+
+	# K14s kapp, ytt, kbld
 	curl -L https://k14s.io/install.sh | K14SIO_INSTALL_BIN_DIR=${PROJECT_HOME}/bin bash
 
-
-
-
-	(
-	  set -x; cd "$(mktemp -d)" &&
-	  curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/krew.{tar.gz,yaml}" &&
-	  tar zxvf krew.tar.gz &&
-	  KREW=./krew-"$(uname | tr '[:upper:]' '[:lower:]')_amd64" &&
-	  "$KREW" install --manifest=krew.yaml --archive=krew.tar.gz &&
-	  "$KREW" update
-	)
+    (
+    set -x; cd "$(mktemp -d)" &&
+    OS="$(uname | tr '[:upper:]' '[:lower:]')" &&
+    ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')" &&
+    KREW="krew-${OS}_${ARCH}" &&
+    curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz" &&
+    tar zxvf "${KREW}.tar.gz" &&
+    ./"${KREW}" install krew
+    )
 
 	export PATH="${PROJECT_HOME}/bin:${PATH}:${HOME}/.krew/bin"
-	kubectl krew install ctx
-	kubectl krew install ns
-	kubectl krew install tail
-	kubectl krew install access-matrix
-
+    kubectl krew install access-matrix cert-manager ctx konfig ns tail
 
 	sudo usermod -aG docker $USER
 
@@ -157,19 +151,19 @@ function cloud_common (){
 
 function setup_aws (){
 	cloud_common
-	echo == AWS CLI 
+	echo == AWS CLI
 	curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 	unzip awscliv2.zip
 	./aws/install -i ${PROJECT_HOME}/bin/aws-cli -b ${PROJECT_HOME}/bin
 	rm -rf awscliv2.zip ./aws
-	
+
 }
 
 function setup_tkgi(){
-    
+
     echo == TKGI
     wget -q -O - https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key | sudo apt-key add -
-    [[ -f /etc/apt/sources.list.d/cloudfoundry-cli.list ]] || 
+    [[ -f /etc/apt/sources.list.d/cloudfoundry-cli.list ]] ||
         echo "deb https://packages.cloudfoundry.org/debian stable main" | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
 
     # Bosh
@@ -191,7 +185,7 @@ function setup_tkgi(){
     URL=https://github.com/concourse/concourse/releases/download/v6.3.1/fly-6.3.1-linux-amd64.tgz
     wget -q ${URL} -O- | tar -C ${PROJECT_HOME}/bin -zx fly
     chmod a+x ${PROJECT_HOME}/bin/fly
-    
+
     # OM
     URL=https://github.com/pivotal-cf/om/releases/download/6.1.2/om-linux-6.1.2.tar.gz
     wget -q ${URL} -O- | tar -C ${PROJECT_HOME}/bin -zx om
@@ -201,15 +195,15 @@ function setup_tkgi(){
     URL=https://github.com/pivotal-cf/pivnet-cli/releases/download/v1.0.4/pivnet-linux-amd64-1.0.4
     wget -q ${URL} -O ${PROJECT_HOME}/bin/pivnet
     chmod a+x ${PROJECT_HOME}/bin/pivnet
-    
+
     # UAA
     URL=https://github.com/cloudfoundry-incubator/uaa-cli/releases/download/0.10.0/uaa-linux-amd64-0.10.0
     wget -q ${URL} -O ${PROJECT_HOME}/bin/uaa
     chmod a+x ${PROJECT_HOME}/bin/uaa
-    
-    
-    if [[ -n ${PIVNET_LEGACY_TOKEN} ]] 
-    then 
+
+
+    if [[ -n ${PIVNET_LEGACY_TOKEN} ]]
+    then
         #PKS
         VERSION=1.8.1
         om download-product -t "${PIVNET_LEGACY_TOKEN}" -o /tmp -v "${VERSION}"  -p pivotal-container-service --pivnet-file-glob='pks-linux-amd64-*'
@@ -219,7 +213,7 @@ function setup_tkgi(){
 }
 
 function setup_vsphere (){
-	
+
 	echo == Vsphere
 	wget -q https://github.com/vmware/govmomi/releases/download/v0.23.0/govc_linux_amd64.gz -O- | gunzip  > ${PROJECT_HOME}/bin/govc
 	chmod a+x ${PROJECT_HOME}/bin/govc
@@ -227,7 +221,7 @@ function setup_vsphere (){
 
 function setup_gcp(){
     # GCP SDK
-    [[ -f /etc/apt/sources.list.d/google-cloud-sdk.list ]] || 
+    [[ -f /etc/apt/sources.list.d/google-cloud-sdk.list ]] ||
         echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
     sudo apt-get update
@@ -235,24 +229,24 @@ function setup_gcp(){
 }
 
 function setup_azure(){
-    curl -sL https://packages.microsoft.com/keys/microsoft.asc | 
-        gpg --dearmor | 
+    curl -sL https://packages.microsoft.com/keys/microsoft.asc |
+        gpg --dearmor |
         sudo tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null
-    AZ_REPO=$(lsb_release -cs) 
-    [[ -f /etc/apt/sources.list.d/azure-cli.list ]] || 
-        echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | 
+    AZ_REPO=$(lsb_release -cs)
+    [[ -f /etc/apt/sources.list.d/azure-cli.list ]] ||
+        echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" |
         sudo tee /etc/apt/sources.list.d/azure-cli.list
     sudo apt-get update
     sudo apt-get install -qqy azure-cli
 }
 
 function setup_tanzu(){
-	echo == Tanzu 
+	echo == Tanzu
 	curl -sSL https://vmware.bintray.com/tmc/0.1.0-d11404fb/linux/x64/tmc -o ${PROJECT_HOME}/bin/tmc
 	chmod a+x ${PROJECT_HOME}/bin/tmc
 }
 
 for comp in $*
-do 
+do
 	setup_$comp
 done
