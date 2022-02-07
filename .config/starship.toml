@@ -1,24 +1,31 @@
 # Don't print a new line at the start of the prompt
 add_newline = false
 format = """\
+    $time\
     $username\
     $hostname\
-    $time\
-    $package\
-    $golang\
-    $java\
-    $nodejs\
-    $python\
-    $terraform\
-    $conda\
-    $crystal\
-    $cmd_duration\
-    $jobs\
-    $battery\
     $docker_context\
     $kubernetes\
+    $gcloud\
     $aws\
+    $azure\
+    $vagrant\
+    $golang\
+    $java\
+    $kotlin\
+    $nodejs\
+    $php\
+    $python\
+    $conda\
+    $ruby\
+    $rust\
+    $terraform\
+    $package\
+    $helm\
     $line_break\
+    $custom\
+    $jobs\
+    $battery\
     $exec_code\
     $cmd_duration\
     $vi_mode\
@@ -26,34 +33,121 @@ format = """\
     $git_branch\
     $git_commit\
     $git_state\
+    $git_metrics\
     $git_status\
     $character\
 """
 
+[aws]
+format = '[$symbol($profile )(\($region\) )(\[$duration\])]($style) '
+style = "bold 202"
+symbol = " "
 
+[azure]
+format = "[$symbol($subscription)]($style) "
+disabled = false
 
 [character]      # The name of the module we are configuring is "character"
+success_symbol = "[🚀 > ](bold green)"     # The "symbol" segment is being set to "➜"
+error_symbol = "[☠️  >](bold red)"     # The "symbol" segment is being set to "➜"
 
+[cmd_duration]
+format = "⌛️[$duration]($style) "
+
+[custom.arch]
+command = "arch"
+format = "[ $output ]($style) "
+style = "bold purple"
+disabled = false
+when = "true"
 
 [directory]
 truncation_length = 8
 
+[docker_context]
+format = "[$symbol$context]($style) "
+symbol = "🐳"
 
+[gcloud]
+# format = '[$symbol$account(@$domain)(\($region\))]($style) '
+format = '[$symbol$active/$project]($style) '
+style = "bold green"
+symbol = " "
+
+[golang]
+symbol = ""
+format = "[$symbol($version )]($style) "
+
+[git_branch]
+format = "[$symbol$branch]($style) "
+symbol = ""
+truncation_length = 8
+truncation_symbol = ""
+
+[git_commit]
+commit_hash_length = 8
+tag_symbol = "🔖 "
+
+[git_status]
+conflicted = "🏳 "
+ahead = "🏎💨 "
+behind = "😰 "
+diverged = "😵 "
+up_to_date = "✅ "
+untracked = "🤷‍ "
+stashed = "📦 "
+modified = "📝 "
+staged = '[++\($count\)](green)'
+renamed = "👅 "
+deleted = "🗑 "
+
+[helm]
+format = "[$symbol($version )]($style)"
+symbol = " "
+
+[java]
+format = "[${symbol}(${version} )]($style) "
+# symbol = ""
+symbol = "☕️"
+style = "bold red"
 
 [kubernetes]
-symbol = "☸:"
+format = '[$symbol$context( \($namespace\))]($style) '
+symbol = "☸️ "
 disabled = false
 
+[nodejs]
+symbol = ""
+format	= "[$symbol($version )]($style) "
 
+[python]
+symbol = "🐍"
+format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style) '
 
-[docker_context]
-disabled = false
+[package]
+format = "[$symbol$version]($style) "
+symbol = "📦"
 
+[ruby]
+symbol = " "
+format = "[$symbol($version )]($style)"
+
+[rust]
+symbol = " "
+format = "[$symbol($version )]($style)"
+
+[terraform]
+format = "[$symbol$workspace]($style) "
 
 [time]
 disabled = false
-# format = "[ %T ]"
-
+format = "[⌚️$time]($style) "
 
 [username]
+# format = "[👤$user]($style) "
+format = "[🧑🏼‍🚀$user]($style) "
 show_always = true
+
+[vagrant]
+format = "[$symbol($version )]($style)"
+symbol = "⍱ "
