@@ -63,10 +63,12 @@ function setup_common(){
 	sudo apt-get upgrade -y
 	sudo apt-get install -y "${OS_TOOLS[@]}"
 
-    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys CC86BB64
-    sudo add-apt-repository ppa:rmescandon/yq
-    sudo apt update
-    sudo apt install yq -y
+    if [[ "${ARCH}" == "amd64" ]]; then
+        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys CC86BB64
+        sudo add-apt-repository ppa:rmescandon/yq
+        sudo apt update
+        sudo apt install yq -y
+    fi
 
 }
 
@@ -94,16 +96,15 @@ function setup_k8s (){
 
 	sudo apt-get update
 	sudo apt-get install -qqy \
-	  docker-ce \
       docker-ce-cli \
-      containerd.io \
       docker-compose \
 	  kubectl \
 	  helm
 
-
 	# K14s kapp, ytt, kbld
-	curl -L https://k14s.io/install.sh | K14SIO_INSTALL_BIN_DIR=${PROJECT_HOME}/bin bash
+    wget -O- https://carvel.dev/install.sh | K14SIO_INSTALL_BIN_DIR=$HOME/bin bash
+
+    curl -sS https://webinstall.dev/k9s | bash
 
     (
     set -x; cd "$(mktemp -d)" &&
@@ -118,9 +119,6 @@ function setup_k8s (){
 	export PATH="${PROJECT_HOME}/bin:${PATH}:${HOME}/.krew/bin"
     kubectl krew install access-matrix cert-manager ctx konfig ns tail  || echo "[WARNING] Some plugins were not installed"
 
-	sudo usermod -aG docker $USER
-
-
 	helm repo add elastic https://helm.elastic.co
 	helm repo add harbor https://helm.goharbor.io
 	helm repo add wavefront https://wavefronthq.github.io/helm/
@@ -129,10 +127,6 @@ function setup_k8s (){
 	helm repo add stable https://kubernetes-charts.storage.googleapis.com
 
 	helm repo update
-
-	curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.11.1/kind-linux-${ARCH}
-	chmod +x ./kind
-	mv ./kind ${PROJECT_HOME}/bin/kind
 
     curl -sSL  https://github.com/derailed/k9s/releases/latest/download/k9s_Linux_${ARCH}.tar.gz  | tar -C ${PROJECT_HOME}/bin -xvf - k9s
     [[ "${ARCH}" == "amd64" ]] && curl -sSL  https://github.com/wagoodman/dive/releases/download/v0.9.2/dive_0.9.2_linux_amd64.tar.gz | tar -C ${PROJECT_HOME}/bin -xz dive
