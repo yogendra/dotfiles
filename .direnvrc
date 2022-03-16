@@ -1,4 +1,4 @@
-#-*- mode: sh; -*-
+.#-*- mode: sh; -*-
 # This is a extra goodness for direnv
 # adds
 #   use pcf-toolsmith <pcf-domain> <om-password>
@@ -109,19 +109,19 @@ use_pcf-pez () {
     # Required argumets:
     # 1 - PEZ_HAAS_ID (Example: 207)
     # 2 - PEZ_PASSWD (Example: kjshak734879fzsbSA)
-    # Example: 
+    # Example:
     # use pez 207 80fsaufoasposduf9
 
     export PEZ_HAAS_ID=$1
     export PEZ_PASSWD=$2
     export PEZ_NAME=haas-${PEZ_HAAS_ID}
     export PEZ_DOMAIN=${PEZ_NAME}.pez.pivotal.io
-    
+
     export PEZ_JUMPBOX_WIN=jumpbox-${PEZ_HAAS_ID}.${PEZ_DOMAIN}
     export PEZ_JUMPBOX_LINUX=ubuntu-${PEZ_HAAS_ID}.${PEZ_DOMAIN}
     export PEZ_VCENTER=vcsa-01.${PEZ_DOMAIN}
     export PEZ_NSXMGR=nsxmgr-01.${PEZ_DOMAIN}
-    
+
 
     export OM_TARGET=opsmgr-02.${PEZ_DOMAIN}
     export OM_USERNAME=admin
@@ -129,14 +129,14 @@ use_pcf-pez () {
     export OM_SKIP_SSL_VALIDATION=true
     export OM_KEY=$PWD/$PEZ_NAME.key
     export PCF_PKS_API=api.run.${PEZ_DOMAIN}
-    
+
     export PCF_DOMAIN=$PEZ_DOMAIN
 
     function pcf-pez-ssh-jumpbox {
         echo ssh \
             -i $PWD/$PEZ_NAME.key  \
             -o PasswordAuthentication=no \
-            ubuntu@$PEZ_JUMPBOX_LINUX 
+            ubuntu@$PEZ_JUMPBOX_LINUX
 
     }
     export_function pcf-pez-ssh-jumpbox
@@ -147,7 +147,7 @@ use_pcf() {
     # Required Variables:
     # OM_TARGET - OpsMan Address
     # OM_USERNAME - OpsMan username
-    # OM_PASSWORD - OpsMan password 
+    # OM_PASSWORD - OpsMan password
     # OM_SKIP_SSL_VALIDATION - Skip OpsMan SSL checks
     # OM_KEY - path to OpsMsn key
     export UAAC_HOME=$PWD
@@ -164,11 +164,11 @@ use_pcf() {
         echo "OM_TARGET, OM_USERNAME, OM_PASSWORD and OM_KEY are required to be set"
         exit 1
     fi
-    
+
     export PCF_DOMAIN=${1:-$PCF_DOMAIN}
-    
+
     [[ -z $PCF_DOMAIN ]] && echo "You need to provide pcf domain root or set PCF_DOMAIN variable" && exit 1
-    
+
     export PCF_BBR_KEYFILE=$PWD/bbr.key
     export PCF_BOSH_CA_CERT=$PWD/bosh-ca.cer
     export PCF_BOSH_ENV=$PWD/.env-bosh
@@ -181,28 +181,28 @@ use_pcf() {
         echo Extracting Bosh CA Cert
         om --target https://$OM_TARGET --skip-ssl-validation --username $OM_USERNAME --password $OM_PASSWORD certificate-authorities -f json | jq -r '.[] | select(.active==true) | .cert_pem' > $PCF_BOSH_CA_CERT && chmod 600 ${PCF_BOSH_CA_CERT}
     fi
-   
+
     if [[ ! -f $PCF_BBR_KEYFILE ]]
     then
         echo Extracting BBR Key
         echo "$(om -k credentials --product-name p-bosh --credential-reference .director.bbr_ssh_credentials -f private_key_pem)" > ${PCF_BBR_KEYFILE} && chmod 600 ${PCF_BBR_KEYFILE}
     fi
 
-    if [[ ! -f $PCF_BOSH_ENV ]] 
+    if [[ ! -f $PCF_BOSH_ENV ]]
     then
         CREDS=$(om -k curl --path /api/v0/deployed/director/credentials/bosh_commandline_credentials -s | jq .credential -r | sed -E 's/bosh//')
         [ -n "${ZSH_VERSION}" ] && setopt shwordsplit
         array=($CREDS)
         for VAR in ${array[@]}; do
             [[ ! $VAR =~ ^BOSH_CA_CERT= ]] &&  echo export $VAR >> $PCF_BOSH_ENV
-            
+
         done
         [ -n "${ZSH_VERSION}" ] && unsetopt shwordsplit
     fi
     watch_file $PCF_BOSH_ENV
     source $PCF_BOSH_ENV
-    
-    
+
+
     function pcf-pcf-info {
         echo OpsMan: https://${OM_TARGET}
     }
@@ -222,13 +222,13 @@ use_pcf() {
     function pcf-opsman-ssh {
         ssh -i $PCF_OPSMAN_KEYFILE -o StrictHostKeyChecking=no ubuntu@$OM_TARGET $*
     }
-    export_function pcf-opsman-ssh    
+    export_function pcf-opsman-ssh
 }
 
 use_pcf-pas() {
     export CF_HOME=$PWD
     export PCF_DOMAIN=${1:-$PCF_DOMAIN}
-    
+
     [[ -z $PCF_DOMAIN ]] && echo "You need to provide pcf domain root or set PCF_DOMAIN variable" && exit 1
 
     export PCF_SYS_DOMAIN=sys.${PCF_DOMAIN}
@@ -246,7 +246,7 @@ use_pcf-pas() {
         echo CF_HOME=$CF_HOME
     }
     export_function pcf-info
-    
+
     function pcf-pas-login {
         cf login --skip-ssl-validation -a https://${PCF_PAS_API} -u admin -p $(om credentials -p cf -c .uaa.admin_credentials -f password)
     }
@@ -274,7 +274,7 @@ use_pcf-pks () {
     if [[ -n $PEZ_HAAS_ID ]]; then
         export PCF_PKS_API=api.run.${PCF_DOMAIN}
     fi
-    
+
     export PKS_API=$PCF_PKS_API
 
         if [[ ! -f $PCF_PKS_API_CA_CERT ]]
@@ -299,7 +299,7 @@ use_pcf-pks () {
     }
     export_function pcf-pks-login
 
-    function pcf-info { 
+    function pcf-info {
         pcf-pcf-info
         echo PKS API: ${PCF_PKS_API}
     }
@@ -314,8 +314,8 @@ use_pcf-pks () {
         if ! nslookup  $CLUSTER_HOSTNAME >> /dev/null
         then
             cat <<EOF
-$CLUSTER_HOSTNAME: not found. 
-- You should configure it on the DNS  
+$CLUSTER_HOSTNAME: not found.
+- You should configure it on the DNS
 - On GCP use GCP Consol > Networking > Cloud DNS (https://console.cloud.google.com/net-services/dns/zones) to set correct IP
 - On AWS [WIP]
 - On Azure [WIP]

@@ -1,4 +1,4 @@
-PRIVATE_DIR=$DOTFILE_DIR/private
+PRIVATE_DIR=$DOTFILES_CONFIG_DIR/private
 target=$1
 echo Sync: $PRIVATE_DIR ->  $target
 if [[ -d $target ]] && [[ -d $target/private ]]

@@ -32,13 +32,8 @@ alias kg="k get"
 alias kd="k describe"
 alias ka="k apply"
 
-alias d=docker            
+alias d=docker
 alias drumit="docker run --rm -it"
 alias dm=docker-machine
 alias dc=docker-compose
 alias docker-host='docker run --rm -it --privileged --pid=host debian nsenter -t 1 -m -u -n -i sh'
-
-
-
-os_aliases=.aliases.$(uname)
-[[ -f $os_aliases ]] && source $os_aliases
