@@ -128,7 +128,7 @@ function setup_k8s (){
 
 	helm repo update
 
-    curl -sSL  https://github.com/derailed/k9s/releases/latest/download/k9s_Linux_${ARCH}.tar.gz  | tar -C ${PROJECT_HOME}/bin -xvf - k9s
+    curl -sSL  https://github.com/derailed/k9s/releases/latest/download/k9s_Linux_${ARCH}.tar.gz  | tar -C ${PROJECT_HOME}/bin -xzvf - k9s
     [[ "${ARCH}" == "amd64" ]] && curl -sSL  https://github.com/wagoodman/dive/releases/download/v0.9.2/dive_0.9.2_linux_amd64.tar.gz | tar -C ${PROJECT_HOME}/bin -xz dive
 }
 
