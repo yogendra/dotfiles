@@ -10,7 +10,7 @@ bind C-Space send-prefix
   
 set -g base-index 1
 setw -g pane-base-index 1
-
+set status-position top
   
 bind c new-window -c "#{pane_current_path}"
 bind m set-option -g mouse
