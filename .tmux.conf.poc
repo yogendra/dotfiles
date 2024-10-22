@@ -9,29 +9,40 @@ set -g mouse on
 set -g base-index 1
 setw -g pane-base-index 1
 setw -g status-position top
-  
+set -g default-terminal "tmux-256color"
+
 bind c new-window -c "#{pane_current_path}"
 bind b setw synchronize-panes
 bind j choose-window 'join-pane -v -t "%%"'
-# bind l send-keys -R \; clear-history
-# bind l clear history
 bind m set-option -g mouse
 bind r source-file ~/.tmux.conf \; display "Reloaded!"
+bind a select-pane -L
+bind s select-pane -D
+bind w select-pane -U
+bind d select-pane -R
+unbind-key -n M-Left
+unbind-key -n M-Right
+unbind-key -n M-Up
+unbind-key -n M-Down
+bind -n S-Left  previous-window
+bind -n S-Right next-window
+bind -n S-Up  select-pane -t :.-
+bind -n S-Down select-pane -t :.+
 
-set -g @catppuccin_flavour 'mocha'
+
 set -g @continuum-restore 'on'
+
 set -g @plugin 'dreamsofcode-io/catppuccin-tmux'
-#set -g @plugin 'erikw/tmux-powerline'
 set -g @plugin 'tmux-plugins/tpm'
 set -g @plugin 'jaclu/tmux-menus'
 set -g @plugin 'sainnhe/tmux-fzf'
-set -g @plugin 'seebi/tmux-colors-solarized'
 set -g @plugin 'tmux-plugins/tmux-continuum'
 set -g @plugin 'tmux-plugins/tmux-copycat'
 set -g @plugin 'tmux-plugins/tmux-pain-control'
 set -g @plugin 'tmux-plugins/tmux-resurrect'
 set -g @plugin 'tmux-plugins/tmux-sensible'
 set -g @plugin 'tmux-plugins/tmux-sidebar'
+
 
 if "test ! -d ~/.tmux/plugins/tpm" \
    "run 'git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm && ~/.config/tmux/plugins/tpm/bin/install_plugins'"
