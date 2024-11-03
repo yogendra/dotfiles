@@ -16,10 +16,7 @@ bind b setw synchronize-panes
 bind j choose-window 'join-pane -v -t "%%"'
 bind m set-option -g mouse
 bind r source-file ~/.tmux.conf \; display "Reloaded!"
-bind a select-pane -L
-bind s select-pane -D
-bind w select-pane -U
-bind d select-pane -R
+
 unbind-key -n M-Left
 unbind-key -n M-Right
 unbind-key -n M-Up
