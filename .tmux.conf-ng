@@ -1,3 +1,5 @@
+# Run to install or update
+# mkdir -p ~/.config/tmux; curl -sSL https://raw.githubusercontent.com/yogendra/dotfiles/refs/heads/master/.tmux.conf-ng -o ~/.config/tmux/tmux.conf
 
 set-option -g status-keys vi
 set-option -g mode-keys vi
@@ -15,7 +17,7 @@ setw -g status-position top
 bind c new-window -c "#{pane_current_path}"
 bind m set-option -g mouse
 
-bind r source-file ~/.tmux.conf \; display "Reloaded!"
+bind r source-file ~/.config/tmux/tmux.conf \; display "Reloaded!"
 bind b setw synchronize-panes
 bind j choose-window 'join-pane -v -t "%%"'
 
